@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Will Castner</title>
+  <link href="https://willcastner.com/"/>
+  <link rel="self" href="https://willcastner.com/feed.xml"/>
+  <id>https://willcastner.com/</id>
+  <updated>2026-08-10T00:00:00+00:00</updated>
+  <entry>
+    <title>How this site is built</title>
+    <link href="https://willcastner.com/writing/colophon/"/>
+    <id>https://willcastner.com/writing/colophon/</id>
+    <updated>2026-08-10T00:00:00+00:00</updated>
+    <content type="html">&lt;p&gt;This site is about as simple as a site can be while still being pleasant to write for.&lt;/p&gt;
+&lt;p&gt;There is one Python file. It reads markdown out of &lt;code&gt;posts/&lt;/code&gt;, wraps it in a single HTML template, and writes plain files into &lt;code&gt;docs/&lt;/code&gt;. GitHub Pages serves that directory. There is no package manager, no &lt;code&gt;node_modules&lt;/code&gt;, no framework, and nothing to upgrade. The whole thing runs on the Python that ships with macOS.&lt;/p&gt;
+&lt;p&gt;Writing a post is three steps:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;python3 build.py --new &amp;quot;Post title&amp;quot;
+# edit the file it prints, delete the draft: line
+python3 build.py
+git add -A &amp;amp;&amp;amp; git commit -m &amp;quot;new post&amp;quot; &amp;amp;&amp;amp; git push&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Pages goes live a minute or so later.&lt;/p&gt;
+&lt;h2&gt;Why not a static site generator&lt;/h2&gt;
+&lt;p&gt;Because the interesting part of a blog is the writing, and every generator I&amp;#x27;ve used eventually asks for more attention than the writing does — a config format to learn, a theme to fight, a dependency tree that rots. The markdown support here is a deliberate subset: headings, lists, links, emphasis, code, blockquotes, images, rules. That covers essentially everything I&amp;#x27;d actually write, and when it doesn&amp;#x27;t, a raw HTML block passes straight through untouched.&lt;/p&gt;
+&lt;p&gt;The tradeoff is real and I&amp;#x27;m making it on purpose. If I ever need footnotes or syntax highlighting badly enough, they&amp;#x27;re each a small function in the one file I already own.&lt;/p&gt;
+&lt;h2&gt;What&amp;#x27;s here&lt;/h2&gt;
+&lt;p&gt;Mostly notes about operations work at a research company, and the small tools I keep writing to avoid doing things twice. Nothing on a schedule.&lt;/p&gt;</content>
+  </entry>
+</feed>
