@@ -310,7 +310,9 @@ def build():
         if item.is_file():
             shutil.copy2(item, OUT / item.name)
 
-    (OUT / "CNAME").write_text(DOMAIN + "\n", encoding="utf-8")
+    # No trailing newline: matches the file GitHub writes when the custom
+    # domain is saved in Settings, so rebuilds don't show spurious drift.
+    (OUT / "CNAME").write_text(DOMAIN, encoding="utf-8")
     (OUT / ".nojekyll").write_text("", encoding="utf-8")
 
     print(f"built {len(posts)} post(s) -> {OUT}")
