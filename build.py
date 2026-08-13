@@ -27,6 +27,14 @@ SITE_URL = "https://willcastner.com"
 SITE_DESC = "Personal site of Will Castner."
 DOMAIN = "willcastner.com"
 
+# Shown as a row of links under the bio on the homepage.
+LINKS = [
+    ("Email", "mailto:william@mechanize.work"),
+    ("GitHub", "https://github.com/WilliamCastner"),
+]
+
+WORDS_PER_MINUTE = 200
+
 
 # --------------------------------------------------------------------------
 # markdown subset
@@ -163,11 +171,13 @@ def load_posts():
             day, slug = date.today(), stem
         if meta.get("date"):
             day = date.fromisoformat(meta["date"])
+        words = len(re.findall(r"\w+", body))
         posts.append({
             "title": meta.get("title", slug.replace("-", " ").title()),
             "date": day,
             "slug": slug,
             "summary": meta.get("summary", ""),
+            "minutes": max(1, round(words / WORDS_PER_MINUTE)),
             "html": markdown(body),
         })
     posts.sort(key=lambda p: (p["date"], p["slug"]), reverse=True)
@@ -197,15 +207,28 @@ def render(path_parts, title, content, description=SITE_DESC):
     (target / "index.html").write_text(page, encoding="utf-8")
 
 
-def post_list(posts, limit=None):
+def feed_list(posts):
+    """The month/year + title + read-time list used on the homepage."""
+    if not posts:
+        return '<p class="post-meta">Nothing here yet.</p>'
     items = []
-    for p in (posts[:limit] if limit else posts):
-        stamp = p["date"].strftime("%b %Y")
+    for p in posts:
         items.append(
-            f'<li><span class="date">{stamp}</span>'
-            f'<a href="/writing/{p["slug"]}/">{html.escape(p["title"])}</a></li>'
+            f'<a class="feed-item" href="/writing/{p["slug"]}/">'
+            f'<span class="feed-calendar">'
+            f'<span class="feed-month">{p["date"].strftime("%b")}</span>{p["date"].year}</span>'
+            f'<span class="feed-title">{html.escape(p["title"])}</span>'
+            f'<span class="feed-length">{p["minutes"]} min read</span>'
+            f"</a>"
         )
-    return '<ul class="posts">' + "".join(items) + "</ul>" if items else "<p>Nothing yet.</p>"
+    return '<div class="feed">' + "".join(items) + "</div>"
+
+
+def links_row():
+    if not LINKS:
+        return ""
+    anchors = "".join(f'<a href="{url}">{html.escape(label)}</a>' for label, url in LINKS)
+    return f'<nav class="links">{anchors}</nav>'
 
 
 def rfc3339(d):
@@ -244,19 +267,25 @@ def build():
 
     posts = load_posts()
 
-    # home
-    home_md = (ROOT / "pages" / "index.md")
-    intro = markdown(parse_front_matter(home_md.read_text(encoding="utf-8"))[1]) if home_md.exists() else ""
-    render([], SITE_NAME, intro + "<h2>Writing</h2>" + post_list(posts, limit=5))
-
-    # writing index
-    render(["writing"], f"Writing — {SITE_NAME}", "<h1>Writing</h1>" + post_list(posts))
+    # home: name, bio, links, then the full post list
+    home_md = ROOT / "pages" / "index.md"
+    bio = markdown(parse_front_matter(home_md.read_text(encoding="utf-8"))[1]) if home_md.exists() else ""
+    home = (
+        f'<h1 class="name">{html.escape(SITE_NAME)}</h1>'
+        f'<div class="bio">{bio}</div>'
+        f"{links_row()}"
+        f'<span class="section-label">Writing</span>'
+        f"{feed_list(posts)}"
+    )
+    render([], SITE_NAME, home)
 
     # posts
     for p in posts:
         body = (
-            f'<article><h1>{html.escape(p["title"])}</h1>'
-            f'<p class="date">{p["date"].strftime("%B %-d, %Y")}</p>'
+            f'<a class="backlink" href="/">&larr; {html.escape(SITE_NAME)}</a>'
+            f'<article><h1 class="post-title">{html.escape(p["title"])}</h1>'
+            f'<p class="post-meta">{p["date"].strftime("%B %-d, %Y")} '
+            f'&middot; {p["minutes"]} min read</p>'
             f'{p["html"]}</article>'
         )
         render(["writing", p["slug"]], f'{p["title"]} — {SITE_NAME}', body,
@@ -268,8 +297,12 @@ def build():
             continue
         meta, body = parse_front_matter(path.read_text(encoding="utf-8"))
         title = meta.get("title", path.stem.title())
-        render([path.stem], f"{title} — {SITE_NAME}",
-               f"<h1>{html.escape(title)}</h1>" + markdown(body))
+        page = (
+            f'<a class="backlink" href="/">&larr; {html.escape(SITE_NAME)}</a>'
+            f'<article><h1 class="post-title">{html.escape(title)}</h1>'
+            f"{markdown(body)}</article>"
+        )
+        render([path.stem], f"{title} — {SITE_NAME}", page)
 
     build_feed(posts)
 

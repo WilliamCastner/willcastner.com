@@ -29,11 +29,15 @@ python3 build.py --serve   # http://localhost:8000
 | Path              | What it is                                            |
 | ----------------- | ----------------------------------------------------- |
 | `posts/`          | Blog posts, `YYYY-MM-DD-slug.md`                       |
-| `pages/index.md`  | The blurb on the homepage                              |
-| `pages/*.md`      | Standalone pages — `about.md` becomes `/about/`        |
+| `pages/index.md`  | The bio paragraphs on the homepage                     |
+| `pages/*.md`      | Optional standalone pages — `now.md` becomes `/now/`   |
 | `templates/base.html` | The single layout wrapping every page              |
 | `static/`         | Copied verbatim to the site root (`style.css`, images) |
 | `docs/`           | **Generated.** Served by Pages. Never edit by hand.    |
+
+The homepage is the whole site: name, bio, a row of links, then every post
+listed with month, year and read time. Posts live at `/writing/<slug>/`. Edit
+`LINKS` at the top of `build.py` to change the links row.
 
 ## Front matter
 

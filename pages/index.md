@@ -1,3 +1,5 @@
-<p class="lede">Operations at <a href="https://mechanize.work">Mechanize</a> in San Francisco. I write occasionally about the work — mostly building small tools, and what running operations at a research lab actually looks like day to day.</p>
+I run operations at [Mechanize](https://mechanize.work), an AI research company in San Francisco.
 
-<p>Reach me at <a href="mailto:william@mechanize.work">william@mechanize.work</a>.</p>
+Most of the job is unglamorous and load-bearing: vendors, benefits, payroll, hiring logistics, office and food, and the small internal tools that keep all of it from being done by hand. I like problems where the fix is a hundred lines of Python and a SQLite file rather than a platform.
+
+Sometimes I have notes or small projects that don't belong anywhere else. I put those here.
