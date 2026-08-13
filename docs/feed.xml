@@ -1,27 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Will Castner</title>
+  <title>Molino de Sombra</title>
   <link href="https://willcastner.com/"/>
   <link rel="self" href="https://willcastner.com/feed.xml"/>
   <id>https://willcastner.com/</id>
   <updated>2026-08-10T00:00:00+00:00</updated>
   <entry>
-    <title>How this site is built</title>
-    <link href="https://willcastner.com/writing/colophon/"/>
-    <id>https://willcastner.com/writing/colophon/</id>
+    <title>Inventario de relojes de arena</title>
+    <link href="https://willcastner.com/writing/relojes-de-arena/"/>
+    <id>https://willcastner.com/writing/relojes-de-arena/</id>
     <updated>2026-08-10T00:00:00+00:00</updated>
-    <content type="html">&lt;p&gt;This site is about as simple as a site can be while still being pleasant to write for.&lt;/p&gt;
-&lt;p&gt;There is one Python file. It reads markdown out of &lt;code&gt;posts/&lt;/code&gt;, wraps it in a single HTML template, and writes plain files into &lt;code&gt;docs/&lt;/code&gt;. GitHub Pages serves that directory. There is no package manager, no &lt;code&gt;node_modules&lt;/code&gt;, no framework, and nothing to upgrade. The whole thing runs on the Python that ships with macOS.&lt;/p&gt;
-&lt;p&gt;Writing a post is three steps:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;python3 build.py --new &amp;quot;Post title&amp;quot;
-# edit the file it prints, delete the draft: line
-python3 build.py
-git add -A &amp;amp;&amp;amp; git commit -m &amp;quot;new post&amp;quot; &amp;amp;&amp;amp; git push&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Pages goes live a minute or so later.&lt;/p&gt;
-&lt;h2&gt;Why not a static site generator&lt;/h2&gt;
-&lt;p&gt;Because the interesting part of a blog is the writing, and every generator I&amp;#x27;ve used eventually asks for more attention than the writing does — a config format to learn, a theme to fight, a dependency tree that rots. The markdown support here is a deliberate subset: headings, lists, links, emphasis, code, blockquotes, images, rules. That covers essentially everything I&amp;#x27;d actually write, and when it doesn&amp;#x27;t, a raw HTML block passes straight through untouched.&lt;/p&gt;
-&lt;p&gt;The tradeoff is real and I&amp;#x27;m making it on purpose. If I ever need footnotes or syntax highlighting badly enough, they&amp;#x27;re each a small function in the one file I already own.&lt;/p&gt;
-&lt;h2&gt;What&amp;#x27;s here&lt;/h2&gt;
-&lt;p&gt;Mostly notes about operations work at a research company, and the small tools I keep writing to avoid doing things twice. Nothing on a schedule.&lt;/p&gt;</content>
+    <content type="html">&lt;p&gt;Tengo catorce y ninguno mide lo que promete. El más grande dice una hora y tarda cuarenta y tres minutos. El más pequeño, que cabe en un puño, insiste en tres minutos y se toma nueve. Los he cronometrado a todos con un teléfono, que es la única cosa de esta casa que no discute.&lt;/p&gt;
+&lt;p&gt;La tabla la empecé en marzo. Una columna para lo prometido, otra para lo medido, una tercera para la diferencia y una cuarta, más ancha, para las excusas.&lt;/p&gt;
+&lt;h2&gt;Lo que dicen las excusas&lt;/h2&gt;
+&lt;p&gt;La arena de tres de ellos está húmeda. Dos tienen el cuello demasiado estrecho y se atascan si hay tormenta, cosa que no debería importar y sin embargo importa. Uno lo compré roto a sabiendas, porque el vendedor lo llamó &lt;em&gt;decorativo&lt;/em&gt; y me pareció una palabra generosa para algo que sólo sabe estar quieto.&lt;/p&gt;
+&lt;p&gt;Los ocho restantes funcionan bien. Simplemente no funcionan como dicen.&lt;/p&gt;
+&lt;blockquote&gt;&lt;p&gt;Un reloj que se equivoca siempre en la misma cantidad no está roto. Está en otro idioma.&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;Eso me lo dijo el hombre del mercado de Lunes, que también me vendió una brújula que señala hacia la panadería. De todas mis compras es la que más uso.&lt;/p&gt;
+&lt;h2&gt;La cuarta columna&lt;/h2&gt;
+&lt;p&gt;He pensado en tirar la tabla y quedarme sólo con la cuarta columna, que a estas alturas es lo único que se lee con gusto. Ocupa tres páginas y media. Incluye una discusión de dos párrafos sobre si la humedad de agosto cuenta como defecto del reloj o defecto de agosto.&lt;/p&gt;
+&lt;p&gt;Sigo sin resolverlo. Mientras tanto, mido.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>Los trenes de las once</title>
+    <link href="https://willcastner.com/writing/trenes-que-no-llegan/"/>
+    <id>https://willcastner.com/writing/trenes-que-no-llegan/</id>
+    <updated>2026-05-02T00:00:00+00:00</updated>
+    <content type="html">&lt;p&gt;El altavoz de la estación conserva grabaciones de mil novecientos noventa y algo. Nadie las ha borrado porque nadie es responsable del altavoz; hay un contrato, y en el contrato el altavoz aparece como &lt;em&gt;mobiliario&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Así que a las once anuncia un destino que se cerró hace dieciocho años. Lo anuncia bien, con la entonación de las cosas seguras.&lt;/p&gt;
+&lt;p&gt;He apuntado la lista completa durante seis martes:&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;Once en punto: un pueblo del que sólo queda la señal de entrada.&lt;/li&gt;&lt;li&gt;Once y cuarto: una fábrica, ahora un descampado con dos perros.&lt;/li&gt;&lt;li&gt;Once y media: correcto, existe, sale con retraso.&lt;/li&gt;&lt;li&gt;Doce menos veinte: un balneario. Cerrado en el noventa y cuatro.&lt;/li&gt;&lt;li&gt;Doce en punto: silencio, que es la única parada honesta del día.&lt;/li&gt;&lt;/ul&gt;
+&lt;p&gt;La de las once y media me molesta más que las otras. Las demás mienten con convicción; ésa dice la verdad y aun así no cumple.&lt;/p&gt;
+&lt;p&gt;Un empleado me explicó que cambiar la grabación requiere un formulario y que el formulario requiere saber quién compró el altavoz. Nadie lo sabe. Lo dijo sin pena, como quien describe el tiempo.&lt;/p&gt;
+&lt;p&gt;Bajo igualmente. Cuesta poco y a las doce no anuncia nada, que es cuando mejor se está.&lt;/p&gt;</content>
+  </entry>
+  <entry>
+    <title>Mapas de cocinas vacías</title>
+    <link href="https://willcastner.com/writing/cocinas-vacias/"/>
+    <id>https://willcastner.com/writing/cocinas-vacias/</id>
+    <updated>2025-11-18T00:00:00+00:00</updated>
+    <content type="html">&lt;p&gt;Empecé por una casa que alquilé un verano en la costa. La cocina tenía nevera, ventana y nada más: ni mesa, ni sillas, ni el rectángulo de polvo donde suele haber estado una mesa. Dibujé la planta en una servilleta para acordarme de aquel hueco.&lt;/p&gt;
+&lt;p&gt;Luego dibujé otras. Pedía permiso cuando podía y miraba por la ventana cuando no. En cuatro años junté doscientos once mapas, todos a la misma escala, todos con el norte arriba aunque el norte no importara.&lt;/p&gt;
+&lt;h2&gt;Reglas&lt;/h2&gt;
+&lt;p&gt;Sólo cocinas sin gente. Sólo a lápiz. La nevera siempre marcada con una &lt;strong&gt;N&lt;/strong&gt;, la ventana con una línea doble, y el hueco en blanco: nunca sombreado, nunca rotulado. El hueco tenía que quedarse en blanco o el dibujo no servía.&lt;/p&gt;
+&lt;p&gt;No permití fotos. Una foto de una cocina vacía sale triste sin proponérselo, y el dibujo no; el dibujo sale ordenado.&lt;/p&gt;
+&lt;h2&gt;El martes&lt;/h2&gt;
+&lt;p&gt;En noviembre puse los doscientos once encima de la cama para ordenarlos por tamaño. Vistos juntos eran uno solo. La misma nevera al norte, la misma ventana al oeste, el mismo hueco en medio con la misma forma exacta de mesa ausente.&lt;/p&gt;
+&lt;p&gt;No había estado documentando cocinas. Había estado repitiendo un dibujo doscientas once veces con la letra cada vez más pequeña.&lt;/p&gt;
+&lt;p&gt;Los guardé en una caja y bajé a la estación, donde a esa hora ya no anuncian nada.&lt;/p&gt;</content>
   </entry>
 </feed>

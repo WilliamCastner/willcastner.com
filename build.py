@@ -22,16 +22,29 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 OUT = ROOT / "docs"
 
-SITE_NAME = "Will Castner"
+SITE_NAME = "Molino de Sombra"
 SITE_URL = "https://willcastner.com"
-SITE_DESC = "Personal site of Will Castner."
+SITE_DESC = "Apuntes sueltos sobre relojes de arena, cocinas vacías y trenes que no llegan."
 DOMAIN = "willcastner.com"
 
 # Shown as a row of links under the bio on the homepage.
 LINKS = [
-    ("Email", "mailto:william@mechanize.work"),
-    ("GitHub", "https://github.com/WilliamCastner"),
+    ("Correo", "mailto:william@mechanize.work"),
+    ("Cuaderno", "https://github.com/WilliamCastner"),
+    ("Almanaque", "/writing/relojes-de-arena/"),
 ]
+
+# Heading above the post list on the homepage.
+SECTION_LABEL = "Escritos"
+
+# strftime is locale-dependent, so month names are spelled out here instead.
+MONTHS_SHORT = ["ene", "feb", "mar", "abr", "may", "jun",
+                "jul", "ago", "sep", "oct", "nov", "dic"]
+MONTHS_LONG = ["enero", "febrero", "marzo", "abril", "mayo", "junio",
+               "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
+
+READ_TIME = "min de lectura"
+EMPTY_FEED = "Todavía no hay nada por aquí."
 
 WORDS_PER_MINUTE = 200
 
@@ -210,15 +223,16 @@ def render(path_parts, title, content, description=SITE_DESC):
 def feed_list(posts):
     """The month/year + title + read-time list used on the homepage."""
     if not posts:
-        return '<p class="post-meta">Nothing here yet.</p>'
+        return f'<p class="post-meta">{html.escape(EMPTY_FEED)}</p>'
     items = []
     for p in posts:
         items.append(
             f'<a class="feed-item" href="/writing/{p["slug"]}/">'
             f'<span class="feed-calendar">'
-            f'<span class="feed-month">{p["date"].strftime("%b")}</span>{p["date"].year}</span>'
+            f'<span class="feed-month">{MONTHS_SHORT[p["date"].month - 1]}</span>'
+            f'{p["date"].year}</span>'
             f'<span class="feed-title">{html.escape(p["title"])}</span>'
-            f'<span class="feed-length">{p["minutes"]} min read</span>'
+            f'<span class="feed-length">{p["minutes"]} {READ_TIME}</span>'
             f"</a>"
         )
     return '<div class="feed">' + "".join(items) + "</div>"
@@ -274,7 +288,7 @@ def build():
         f'<h1 class="name">{html.escape(SITE_NAME)}</h1>'
         f'<div class="bio">{bio}</div>'
         f"{links_row()}"
-        f'<span class="section-label">Writing</span>'
+        f'<span class="section-label">{html.escape(SECTION_LABEL)}</span>'
         f"{feed_list(posts)}"
     )
     render([], SITE_NAME, home)
@@ -284,8 +298,9 @@ def build():
         body = (
             f'<a class="backlink" href="/">&larr; {html.escape(SITE_NAME)}</a>'
             f'<article><h1 class="post-title">{html.escape(p["title"])}</h1>'
-            f'<p class="post-meta">{p["date"].strftime("%B %-d, %Y")} '
-            f'&middot; {p["minutes"]} min read</p>'
+            f'<p class="post-meta">{p["date"].day} de '
+            f'{MONTHS_LONG[p["date"].month - 1]} de {p["date"].year} '
+            f'&middot; {p["minutes"]} {READ_TIME}</p>'
             f'{p["html"]}</article>'
         )
         render(["writing", p["slug"]], f'{p["title"]} — {SITE_NAME}', body,
