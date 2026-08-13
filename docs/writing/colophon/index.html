@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How this site is built — Will Castner</title>
+<meta name="description" content="A few hundred lines of stdlib Python, no dependencies, no build tooling.">
+<link rel="stylesheet" href="../../style.css">
+<link rel="alternate" type="application/atom+xml" href="../../feed.xml" title="Will Castner">
+</head>
+<body>
+<a class="backlink" href="/">&larr; Will Castner</a><article><h1 class="post-title">How this site is built</h1><p class="post-meta">August 10, 2026 &middot; 1 min read</p><p>This site is about as simple as a site can be while still being pleasant to write for.</p>
+<p>There is one Python file. It reads markdown out of <code>posts/</code>, wraps it in a single HTML template, and writes plain files into <code>docs/</code>. GitHub Pages serves that directory. There is no package manager, no <code>node_modules</code>, no framework, and nothing to upgrade. The whole thing runs on the Python that ships with macOS.</p>
+<p>Writing a post is three steps:</p>
+<pre><code>python3 build.py --new &quot;Post title&quot;
+# edit the file it prints, delete the draft: line
+python3 build.py
+git add -A &amp;&amp; git commit -m &quot;new post&quot; &amp;&amp; git push</code></pre>
+<p>Pages goes live a minute or so later.</p>
+<h2>Why not a static site generator</h2>
+<p>Because the interesting part of a blog is the writing, and every generator I&#x27;ve used eventually asks for more attention than the writing does — a config format to learn, a theme to fight, a dependency tree that rots. The markdown support here is a deliberate subset: headings, lists, links, emphasis, code, blockquotes, images, rules. That covers essentially everything I&#x27;d actually write, and when it doesn&#x27;t, a raw HTML block passes straight through untouched.</p>
+<p>The tradeoff is real and I&#x27;m making it on purpose. If I ever need footnotes or syntax highlighting badly enough, they&#x27;re each a small function in the one file I already own.</p>
+<h2>What&#x27;s here</h2>
+<p>Mostly notes about operations work at a research company, and the small tools I keep writing to avoid doing things twice. Nothing on a schedule.</p></article>
+<footer>
+  <p>&copy; 2026 Will Castner &middot; <a href="../../feed.xml">RSS</a></p>
+</footer>
+</body>
+</html>
