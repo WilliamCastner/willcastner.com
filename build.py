@@ -24,7 +24,7 @@ OUT = ROOT / "docs"
 
 SITE_NAME = "Will Castner"
 SITE_URL = "https://willcastner.com"
-SITE_DESC = "Personal site of Will Castner."
+SITE_DESC = "Operations at Mechanize."
 DOMAIN = "willcastner.com"
 
 # Shown as a row of links under the bio on the homepage.
