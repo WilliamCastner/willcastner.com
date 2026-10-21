@@ -4,50 +4,54 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Climbing Training</title>
+<link rel="stylesheet" href="/style.css">
 <style>
-:root{--bg:#f6f5f2;--card:#fff;--fg:#1d1d1f;--mut:#6b6b70;--line:#e3e2dd;--acc:#2f6f4f;--accbg:#e6f1ea;--warn:#9a5b00;--warnbg:#fbf0dc;--red:#a33;--r:12px}
-@media (prefers-color-scheme:dark){:root{--bg:#121214;--card:#1c1c1f;--fg:#ececee;--mut:#9a9aa2;--line:#2c2c31;--acc:#6fc196;--accbg:#1d2e25;--warn:#e0a84a;--warnbg:#33281a;--red:#e07a7a}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-header{max-width:860px;margin:0 auto;padding:20px 16px 4px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline}
-h1{font-size:20px;margin:0}
-.back{flex-basis:100%;color:var(--mut);text-decoration:none;font-size:14px}
-.back:hover{color:var(--fg)}
-nav{display:flex;gap:4px;flex-wrap:wrap}
-nav button{background:none;border:1px solid var(--line);color:var(--fg);padding:6px 12px;border-radius:999px;cursor:pointer;font:inherit}
-nav button[aria-pressed=true]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-main{max-width:860px;margin:0 auto;padding:8px 16px 40px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:12px 0}
-.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.mut{color:var(--mut)}
-.pill{display:inline-block;font-size:12px;padding:2px 9px;border-radius:999px;background:var(--accbg);color:var(--acc);font-weight:600}
-.pill.warn{background:var(--warnbg);color:var(--warn)}
-.banner{border-radius:var(--r);padding:10px 14px;margin:12px 0;background:var(--warnbg);color:var(--warn)}
-h2{font-size:22px;margin:4px 0}
-h3{font-size:15px;margin:16px 0 6px}
-table{width:100%;border-collapse:collapse}
-th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-size:12px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
-tr.today td{background:var(--accbg)}
+/* The site's own stylesheet (/style.css) sets the column, type and colours;
+   these rules only fit the tracker's parts into it, using the site's tokens. */
+header{margin-bottom:var(--space-6)}
+header .backlink{margin-bottom:var(--space-6)}
+nav.tabs{display:flex;flex-wrap:wrap;gap:var(--space-5);margin:0 0 var(--space-6)}
+nav.tabs button{font:inherit;font-size:0.9375rem;background:none;border:0;border-bottom:1px solid transparent;padding:0 0 2px;color:var(--text-secondary);cursor:pointer;transition:color 150ms ease,border-color 150ms ease}
+nav.tabs button:hover{color:var(--link)}
+nav.tabs button[aria-pressed=true]{color:var(--text-primary);border-bottom-color:var(--text-primary)}
+.card{margin:0 0 var(--space-7);padding:0 0 var(--space-6);border-bottom:1px solid var(--border)}
+.card:last-child{border-bottom:0}
+h2{font-size:1.25rem;font-weight:600;letter-spacing:-0.01em;line-height:1.3;margin:var(--space-2) 0 var(--space-3)}
+h3{font-size:0.75rem;font-weight:400;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-tertiary);margin:var(--space-6) 0 var(--space-3)}
+.mut{color:var(--text-secondary)}
+.small{font-size:0.8125rem}
+.daynav{margin-bottom:var(--space-5)}
+.row{display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center}
+.pill{font-size:0.75rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-tertiary)}
+.pill.warn{color:var(--link)}
+.banner{margin:0 0 var(--space-5);padding-left:var(--space-4);border-left:2px solid var(--link-underline);color:var(--text-secondary)}
+table{width:100%;border-collapse:collapse;font-size:0.9375rem;margin-bottom:var(--space-4)}
+th,td{text-align:left;padding:var(--space-3) var(--space-2) var(--space-3) 0;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-size:0.75rem;font-weight:400;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-tertiary)}
+tr.today td{color:var(--text-primary);font-weight:600}
+tr.today td:first-child::before{content:"→ ";color:var(--link)}
 ul.ex{list-style:none;padding:0;margin:0}
-ul.ex li{padding:10px 0;border-bottom:1px solid var(--line)}
+ul.ex li{padding:var(--space-4) 0;margin:0;border-bottom:1px solid var(--border);line-height:var(--leading-normal)}
 ul.ex li:last-child{border-bottom:0}
-.ex b{display:block}
-input,button.act,select{font:inherit;padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg)}
-input[type=number]{width:7em}
-button.act{cursor:pointer;background:var(--acc);border-color:var(--acc);color:#fff}
-button.ghost{cursor:pointer;background:none;border:1px solid var(--line);color:var(--fg);padding:6px 10px;border-radius:8px;font:inherit}
-.logform{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:6px}
+.ex b{display:block;font-weight:600}
+input,select{font:inherit;font-size:0.9375rem;padding:6px 10px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text-primary)}
+input[type=number]{width:6.5em}
+input:focus{outline:none;border-color:var(--link)}
+button.act,button.ghost,label.ghost{font:inherit;font-size:0.9375rem;background:none;border:0;border-bottom:1px solid var(--link-underline);border-radius:0;padding:0 0 1px;color:var(--link);cursor:pointer;transition:border-color 150ms ease}
+button.act:hover,button.ghost:hover,label.ghost:hover{border-bottom-color:var(--link-hover-underline)}
+button.ghost:disabled{color:var(--text-tertiary);border-bottom-color:transparent;cursor:default}
+.logform{display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center;margin:var(--space-3) 0 var(--space-2)}
 .scroll{overflow-x:auto}
-svg text{fill:var(--mut);font-size:11px}
-.small{font-size:13px}
+svg{margin:var(--space-3) 0 var(--space-4)}
+svg text{fill:var(--text-tertiary);font-family:var(--font);font-size:11px}
 </style>
 </head>
 <body>
 <header>
-  <a class="back" href="/">&larr; Will Castner</a>
-  <h1>Climbing Training · V9 → V10</h1>
-  <nav aria-label="views">
+  <a class="backlink" href="/">&larr; Will Castner</a>
+  <h1 class="post-title">Climbing training</h1>
+  <p class="post-meta">V9 → V10 · a 7-day cycle from Tuesday, Oct 20, 2026</p>
+  <nav class="tabs" aria-label="views">
     <button data-view="today" aria-pressed="true">Today</button>
     <button data-view="week">Week</button>
     <button data-view="log">Log</button>
@@ -56,6 +60,7 @@ svg text{fill:var(--mut);font-size:11px}
   </nav>
 </header>
 <main id="app"></main>
+<footer><p>&copy; 2026 Will Castner &middot; logs stay in this browser</p></footer>
 <script>
 (function(){
 // ---- data (from the training doc, 10/20/2026) ------------------------------
@@ -160,7 +165,7 @@ function renderToday(){
   var d = viewDate, s = SCHEDULE[cycleDay(d)-1], before = daysSince(d) < 0;
   var isToday = iso(d) === iso(new Date());
   var rt = retestStatus(new Date());
-  var html = "<div class=row><button class=ghost id=prev aria-label='previous day'>←</button>" +
+  var html = "<div class='row daynav'><button class=ghost id=prev aria-label='previous day'>←</button>" +
     "<button class=ghost id=todaybtn" + (isToday ? " disabled" : "") + ">Today</button>" +
     "<button class=ghost id=next aria-label='next day'>→</button></div>";
   if (before) return html + "<div class=card><p>The plan starts Tuesday, Oct 20, 2026.</p></div>";
@@ -197,10 +202,10 @@ function chart(kind){
   function X(t){ return P + (W - 2*P) * (t1 === t0 ? 0.5 : (t - t0) / (t1 - t0)); }
   function Y(v){ return H - P + 6 - (H - 2*P) * (v - lo) / (hi - lo); }
   var pts = l.map(function(x){ return X(fromIso(x.date).getTime()).toFixed(1) + "," + Y(x.load).toFixed(1); }).join(" ");
-  var dots = l.map(function(x){ return "<circle cx='" + X(fromIso(x.date).getTime()).toFixed(1) + "' cy='" + Y(x.load).toFixed(1) + "' r='3.5' fill='var(--acc)'><title>" + esc(x.date) + ": +" + x.load + " lb</title></circle>"; }).join("");
+  var dots = l.map(function(x){ return "<circle cx='" + X(fromIso(x.date).getTime()).toFixed(1) + "' cy='" + Y(x.load).toFixed(1) + "' r='3.5' fill='var(--link)'><title>" + esc(x.date) + ": +" + x.load + " lb</title></circle>"; }).join("");
   return "<svg viewBox='0 0 " + W + " " + H + "' width='100%' role='img' aria-label='added load over time'>" +
     "<text x='4' y='" + (Y(hi)+4) + "'>+" + hi + "</text><text x='4' y='" + (Y(lo)+4) + "'>+" + lo + "</text>" +
-    "<polyline points='" + pts + "' fill='none' stroke='var(--acc)' stroke-width='2'/>" + dots + "</svg>";
+    "<polyline points='" + pts + "' fill='none' stroke='var(--link)' stroke-width='2'/>" + dots + "</svg>";
 }
 
 function renderLog(){
