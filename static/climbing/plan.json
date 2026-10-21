@@ -1,0 +1,475 @@
+{
+  "updated": "2026-10-20",
+  "start": "2026-10-20",
+  "bodyweight_lb": 160,
+  "block": {
+    "weeks": 5,
+    "deload_week": 5,
+    "hang_sets_by_week": [
+      3,
+      4,
+      5,
+      5
+    ],
+    "pull_sets": 4,
+    "deload_hang_sets": 2,
+    "deload_hang_factor": 0.95,
+    "deload_pull_sets": 2,
+    "deload_pull_factor": 0.9
+  },
+  "rules": {
+    "hang_up_reserve_s": 5,
+    "hang_down_reserve_s": 1,
+    "hang_up": 0.02,
+    "hang_down": 0.04,
+    "pull_rpe_low": 7.5,
+    "pull_rpe_high": 8.5,
+    "pull_step_per_half_rpe": 0.02,
+    "pull_down_per_missed_rep": 0.04,
+    "pain_no_increase": 3,
+    "pain_stop": 6,
+    "morning_finger_pain_skip": 3,
+    "test_noise_pct": 6,
+    "test_real_pct": 9,
+    "low_checkin_days": 3,
+    "low_checkin_fallback_sum": 12
+  },
+  "schedule": [
+    {
+      "day": 1,
+      "session": "Fingers + limit bouldering",
+      "focus": "Finger strength",
+      "work": "Max hangs, then 60–75 min of V9–V10 limit problems",
+      "ex": [
+        "Max hangs",
+        "Limit bouldering"
+      ],
+      "climb": true,
+      "reflect": true
+    },
+    {
+      "day": 2,
+      "session": "Strength + antagonists",
+      "focus": "Pulling power",
+      "work": "Weighted pull-ups, front lever holds, push-ups or dips, band external rotations, shoulder mobility",
+      "ex": [
+        "Weighted pull-ups",
+        "Front lever progression",
+        "Push-ups or dips",
+        "Band external rotations",
+        "Shoulder mobility routine"
+      ],
+      "climb": false
+    },
+    {
+      "day": 3,
+      "session": "Rest",
+      "focus": "Recovery",
+      "work": "Optional ankle and hip mobility, about 15 min",
+      "ex": [
+        "Ankle and hip mobility"
+      ],
+      "climb": false,
+      "rest": true
+    },
+    {
+      "day": 4,
+      "session": "Fingers + board",
+      "focus": "Finger strength, power",
+      "work": "Max hangs, then 60 min on Kilter, Moon or Tension board",
+      "ex": [
+        "Max hangs",
+        "Board session"
+      ],
+      "climb": true,
+      "reflect": true
+    },
+    {
+      "day": 5,
+      "session": "Rest",
+      "focus": "Recovery",
+      "work": "Full rest before project day",
+      "ex": [],
+      "climb": false,
+      "rest": true
+    },
+    {
+      "day": 6,
+      "session": "Project day",
+      "focus": "Performance",
+      "work": "V9–V10 projecting, then toes-to-bar 3 × 8",
+      "ex": [
+        "Projecting",
+        "Toes-to-bar"
+      ],
+      "climb": true,
+      "reflect": true
+    },
+    {
+      "day": 7,
+      "session": "Easy volume + mobility",
+      "focus": "Technique, recovery",
+      "work": "Optional 45 min at V5–V7, antagonists, full mobility routine",
+      "ex": [
+        "Easy volume",
+        "Push-ups or dips",
+        "Band external rotations",
+        "Ankle and hip mobility"
+      ],
+      "climb": true,
+      "weekly_check": true
+    }
+  ],
+  "library": {
+    "Max hangs": {
+      "cat": "Fingers",
+      "rx": "20mm edge, half crimp, 10 sec hangs, 3 min rest, a load you could hold about 13 sec (3 sec left)",
+      "log": "hang"
+    },
+    "Limit bouldering": {
+      "cat": "Climbing",
+      "rx": "60–75 min on V9–V10, full rest between attempts"
+    },
+    "Board session": {
+      "cat": "Climbing",
+      "rx": "60 min of powerful, reachy moves and deadpoints"
+    },
+    "Projecting": {
+      "cat": "Climbing",
+      "rx": "V9–V10, target weaknesses: reachy moves, heel hooks, high feet"
+    },
+    "Easy volume": {
+      "cat": "Climbing",
+      "rx": "45 min at V5–V7, quiet feet"
+    },
+    "Weighted pull-ups": {
+      "cat": "Pulling",
+      "rx": "4 × 3–5 at about RPE 8 (2 reps left), 3–5 min rest",
+      "log": "pull"
+    },
+    "Front lever progression": {
+      "cat": "Core",
+      "rx": "4 × 5–8 sec holds"
+    },
+    "Toes-to-bar": {
+      "cat": "Core",
+      "rx": "3 × 8"
+    },
+    "Push-ups or dips": {
+      "cat": "Antagonist",
+      "rx": "3 × 10"
+    },
+    "Band external rotations": {
+      "cat": "Shoulder",
+      "rx": "2 × 15 per arm"
+    },
+    "Scap pull-ups": {
+      "cat": "Shoulder",
+      "rx": "2 × 10"
+    },
+    "Shoulder mobility routine": {
+      "cat": "Mobility",
+      "rx": "Pass-throughs, wall slides, open-book rotations, doorway pec stretch"
+    },
+    "Ankle and hip mobility": {
+      "cat": "Mobility",
+      "rx": "Knee-to-wall, ankle circles, frog stretch 60 sec, 90/90 switches × 10"
+    }
+  },
+  "warmup": "Ankle circles, scap pull-ups, band external rotations, then easy climbing up to V6–V7.",
+  "benchmarks": [
+    {
+      "key": "hangtest",
+      "name": "20mm half-crimp hang, 10 sec max",
+      "day": 1,
+      "ref": "145–160% of bodyweight total",
+      "ref_lo": 70,
+      "ref_hi": 95
+    },
+    {
+      "key": "pulltest",
+      "name": "Weighted pull-up, 1 rep max",
+      "day": 2,
+      "ref": "+55–70% of bodyweight",
+      "ref_lo": 90,
+      "ref_hi": 110
+    }
+  ],
+  "method": [
+    {
+      "title": "Effort ratings",
+      "rule": "Rate effort as reps (or seconds) left in the tank: RPE 10 = nothing left, 9 = 1 rep, 8 = 2 reps, 7 = 3 reps. Rate the last set, right after it.",
+      "evidence": "Validation study",
+      "sources": [
+        "zourdos2016",
+        "halperin2022"
+      ]
+    },
+    {
+      "title": "Adjusting to how it felt beats a fixed plan",
+      "rule": "Next loads are set from how the last session went, not from a fixed percentage schedule.",
+      "evidence": "Two meta-analyses: at least as good as fixed loading, maybe slightly better",
+      "sources": [
+        "hickmott2022",
+        "zhang2021"
+      ]
+    },
+    {
+      "title": "Max hangs dose",
+      "rule": "10 sec hangs on an 18–20mm edge, half crimp, with about 3 sec left, 3 min rest, twice a week. Sets build 3 → 4 → 5 → 5 through each block, then reset.",
+      "evidence": "Several small RCTs and one meta-analysis",
+      "sources": [
+        "lopez2019",
+        "mundry2021",
+        "hermans2022",
+        "stien2023"
+      ]
+    },
+    {
+      "title": "Max hangs: next load",
+      "rule": "5+ sec left on the last hang: add about 2% of total load (body + added weight). 2–4 sec left: hold. 1 sec or less, or a missed hang: drop about 4%.",
+      "evidence": "Borrowed from a lifting RCT; not yet tested on hangboards",
+      "sources": [
+        "helms2018"
+      ]
+    },
+    {
+      "title": "Weighted pull-ups: next load",
+      "rule": "Aim for RPE 8. Each half point below 7.5 adds about 2%, each half point above 8.5 takes off about 2%, each missed rep takes off about 4%. Pull-ups stay secondary to fingers.",
+      "evidence": "One lifting RCT; no climbing trial of pull-up progression",
+      "sources": [
+        "helms2018",
+        "vigouroux2024",
+        "buraas2025"
+      ]
+    },
+    {
+      "title": "No need to train to failure",
+      "rule": "Strength gains are similar across a wide range of reps left, and 2–3 hard sets are enough for strength.",
+      "evidence": "Meta-analysis and ACSM position stand",
+      "sources": [
+        "robinson2024",
+        "acsm2026"
+      ]
+    },
+    {
+      "title": "Planned deload every 5th week",
+      "rule": "Keep training on the same days, but cut volume and effort: 2 lighter hang sets (about 5% lighter), 2 lighter pull-up sets (about 10% lighter), shorter climbing. Not a week off.",
+      "evidence": "Coach consensus and surveys; one RCT found a full week off cost strength",
+      "sources": [
+        "bell2023",
+        "rogerson2024",
+        "coleman2024"
+      ]
+    },
+    {
+      "title": "Early deload when the signs say so",
+      "rule": "Suggest deloading now if: the planned load is missed in 2 sessions in a row, the morning check-in is low 3 days running, or the weekly check shows a substantial finger, elbow or shoulder problem.",
+      "evidence": "Consensus; an unexplained drop in performance is the core sign of overreaching. The thresholds are a judgement call.",
+      "sources": [
+        "meeusen2013",
+        "saw2016",
+        "clarsen2013"
+      ]
+    },
+    {
+      "title": "Morning check-in",
+      "rule": "Sleep, energy, soreness, stress and mood (1–5), plus finger pain (0–10). Compared with your own recent average, not a fixed norm.",
+      "evidence": "Systematic review: self-reported measures track training better than objective ones; single items are noisy",
+      "sources": [
+        "saw2016",
+        "duignan2020"
+      ]
+    },
+    {
+      "title": "Session load",
+      "rule": "Log session effort (0–10) × minutes. It undercounts finger stress, so hang sets are tracked separately. No acute:chronic workload ratio.",
+      "evidence": "Validated method; ACWR has been shown not to predict injury",
+      "sources": [
+        "foster2001",
+        "impellizzeri2020"
+      ]
+    },
+    {
+      "title": "Pain rules",
+      "rule": "Finger pain up to 2/10 during training is fine if it's settled by the next morning. 3–5: no load increases, and skip hangs if it's still there in the morning. 6+, a pop, swelling or the tendon lifting off the bone: stop finger loading and get it scanned.",
+      "evidence": "Pain-monitoring RCT in Achilles tendons (which allows up to 5/10; this is stricter for pulleys) plus expert consensus on pulley injuries",
+      "sources": [
+        "silbernagel2007",
+        "schoffl2003",
+        "miro2021",
+        "quarmby2023"
+      ]
+    },
+    {
+      "title": "Retesting",
+      "rule": "Test fresh, on the first days after each deload (every 5 weeks). A change under 6% is within test noise; over 9% is very likely real. When it's real, training loads rescale by the same ratio.",
+      "evidence": "Reliability studies (test-to-test noise 2–3.4%)",
+      "sources": [
+        "stien2025",
+        "perez2025"
+      ]
+    },
+    {
+      "title": "Grade targets are a reference only",
+      "rule": "No peer-reviewed study gives finger strength for V9 vs V10. Strength explains only part of grade, so the page tracks your own trend.",
+      "evidence": "Large observational studies",
+      "sources": [
+        "torr2022",
+        "giles2021",
+        "buraas2025"
+      ]
+    },
+    {
+      "title": "Noticing on limit days",
+      "rule": "After limit, board and project sessions, note the crux that stopped you, why (grip, body position, power, fear, beta), and one thing to change next time. Film the crux. The page shows your note at the start of the next one.",
+      "evidence": "Coach consensus; deliberate practice explains some of performance; watching your own good attempts helps short-term; the external-focus effect mostly disappears after correcting for bias",
+      "sources": [
+        "macnamara2016",
+        "wang2026",
+        "mckay2024"
+      ]
+    }
+  ],
+  "changes": [
+    "Max hangs: 6 hangs every session → 3–5 sets building through each block, the dose the trials used.",
+    "Deload weeks: drop hangboard and weighted pull-ups → keep them, lighter and fewer sets.",
+    "Weighted pull-ups: 5 × 3–5 → 4 × 3–5 at about RPE 8.",
+    "Retests: any time in weeks 6–8 → the first days after each deload, when you're fresh.",
+    "V10 targets: shown as a rough community reference, since there's no peer-reviewed norm."
+  ],
+  "sources": {
+    "zourdos2016": {
+      "cite": "Zourdos et al. 2016, J Strength Cond Res",
+      "url": "https://doi.org/10.1519/JSC.0000000000001049"
+    },
+    "helms2018": {
+      "cite": "Helms et al. 2018, Front Physiol (RCT)",
+      "url": "https://doi.org/10.3389/fphys.2018.00247"
+    },
+    "hickmott2022": {
+      "cite": "Hickmott et al. 2022, Sports Med Open (meta-analysis)",
+      "url": "https://doi.org/10.1186/s40798-021-00404-9"
+    },
+    "zhang2021": {
+      "cite": "Zhang et al. 2021, Front Physiol (meta-analysis)",
+      "url": "https://doi.org/10.3389/fphys.2021.651112"
+    },
+    "robinson2024": {
+      "cite": "Robinson et al. 2024, Sports Med (meta-analysis)",
+      "url": "https://doi.org/10.1007/s40279-024-02069-2"
+    },
+    "acsm2026": {
+      "cite": "Currier et al. 2026, ACSM position stand, Med Sci Sports Exerc",
+      "url": "https://doi.org/10.1249/MSS.0000000000003897"
+    },
+    "lopez2019": {
+      "cite": "López-Rivera & González-Badillo 2019, J Hum Kinet (RCT)",
+      "url": "https://doi.org/10.2478/hukin-2018-0057"
+    },
+    "mundry2021": {
+      "cite": "Mundry et al. 2021, Sci Rep (RCT)",
+      "url": "https://doi.org/10.1038/s41598-021-92898-2"
+    },
+    "hermans2022": {
+      "cite": "Hermans et al. 2022, Front Sports Act Living (RCT)",
+      "url": "https://doi.org/10.3389/fspor.2022.888158"
+    },
+    "stien2023": {
+      "cite": "Stien et al. 2023, Biol Sport (meta-analysis)",
+      "url": "https://doi.org/10.5114/biolsport.2023.113295"
+    },
+    "perez2025": {
+      "cite": "Pérez-Cordero et al. 2025, Front Sports Act Living (systematic review)",
+      "url": "https://doi.org/10.3389/fspor.2025.1650198"
+    },
+    "torr2022": {
+      "cite": "Torr et al. 2022, J Strength Cond Res",
+      "url": "https://doi.org/10.1519/JSC.0000000000003548"
+    },
+    "giles2021": {
+      "cite": "Giles et al. 2021, Int J Sports Physiol Perform",
+      "url": "https://doi.org/10.1123/ijspp.2020-0637"
+    },
+    "buraas2025": {
+      "cite": "Buraas et al. 2025, Eur J Appl Physiol",
+      "url": "https://doi.org/10.1007/s00421-025-05802-5"
+    },
+    "vigouroux2024": {
+      "cite": "Vigouroux & Devise 2024, Bioengineering (RCT)",
+      "url": "https://doi.org/10.3390/bioengineering11010085"
+    },
+    "bell2023": {
+      "cite": "Bell et al. 2023, Sports Med Open (expert consensus)",
+      "url": "https://doi.org/10.1186/s40798-023-00633-0"
+    },
+    "rogerson2024": {
+      "cite": "Rogerson et al. 2024, Sports Med Open (survey)",
+      "url": "https://doi.org/10.1186/s40798-024-00691-y"
+    },
+    "coleman2024": {
+      "cite": "Coleman et al. 2024, PeerJ (RCT)",
+      "url": "https://doi.org/10.7717/peerj.16777"
+    },
+    "foster2001": {
+      "cite": "Foster et al. 2001, J Strength Cond Res",
+      "url": "https://doi.org/10.1519/1533-4287(2001)015%3C0109:ANATME%3E2.0.CO;2"
+    },
+    "saw2016": {
+      "cite": "Saw et al. 2016, Br J Sports Med (systematic review)",
+      "url": "https://doi.org/10.1136/bjsports-2015-094758"
+    },
+    "duignan2020": {
+      "cite": "Duignan et al. 2020, J Athl Train (systematic review)",
+      "url": "https://doi.org/10.4085/1062-6050-0528.19"
+    },
+    "impellizzeri2020": {
+      "cite": "Impellizzeri et al. 2020, Sports Med",
+      "url": "https://doi.org/10.1007/s40279-020-01378-6"
+    },
+    "silbernagel2007": {
+      "cite": "Silbernagel et al. 2007, Am J Sports Med (RCT)",
+      "url": "https://doi.org/10.1177/0363546506298279"
+    },
+    "schoffl2003": {
+      "cite": "Schöffl et al. 2003, Wilderness Environ Med",
+      "url": "https://doi.org/10.1580/1080-6032(2003)014[0094:PIIRC]2.0.CO;2"
+    },
+    "miro2021": {
+      "cite": "Miro et al. 2021, Wilderness Environ Med (review)",
+      "url": "https://doi.org/10.1016/j.wem.2021.01.011"
+    },
+    "quarmby2023": {
+      "cite": "Quarmby et al. 2023, Front Sports Act Living (systematic review)",
+      "url": "https://doi.org/10.3389/fspor.2023.1269870"
+    },
+    "stien2025": {
+      "cite": "Stien et al. 2025, J Sports Sci",
+      "url": "https://doi.org/10.1080/02640414.2025.2477863"
+    },
+    "halperin2022": {
+      "cite": "Halperin et al. 2022, Sports Med (scoping review and meta-analysis)",
+      "url": "https://doi.org/10.1007/s40279-021-01559-x"
+    },
+    "clarsen2013": {
+      "cite": "Clarsen et al. 2013, Br J Sports Med (OSTRC questionnaire)",
+      "url": "https://doi.org/10.1136/bjsports-2012-091524"
+    },
+    "meeusen2013": {
+      "cite": "Meeusen et al. 2013, Med Sci Sports Exerc (consensus)",
+      "url": "https://doi.org/10.1249/MSS.0b013e318279a10a"
+    },
+    "macnamara2016": {
+      "cite": "Macnamara et al. 2016, Perspect Psychol Sci (meta-analysis)",
+      "url": "https://doi.org/10.1177/1745691616635591"
+    },
+    "mckay2024": {
+      "cite": "McKay et al. 2024, Psychol Bull (meta-analysis)",
+      "url": "https://doi.org/10.1037/bul0000451"
+    },
+    "wang2026": {
+      "cite": "Wang et al. 2026, Front Sports Act Living (meta-analysis)",
+      "url": "https://doi.org/10.3389/fspor.2026.1809566"
+    }
+  }
+}

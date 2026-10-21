@@ -40,7 +40,18 @@ input:focus{outline:none;border-color:var(--link)}
 button.act,button.ghost,label.ghost{font:inherit;font-size:0.9375rem;background:none;border:0;border-bottom:1px solid var(--link-underline);border-radius:0;padding:0 0 1px;color:var(--link);cursor:pointer;transition:border-color 150ms ease}
 button.act:hover,button.ghost:hover,label.ghost:hover{border-bottom-color:var(--link-hover-underline)}
 button.ghost:disabled{color:var(--text-tertiary);border-bottom-color:transparent;cursor:default}
-.logform{display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center;margin:var(--space-3) 0 var(--space-2)}
+.logform{display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:flex-end;margin:var(--space-3) 0 var(--space-2)}
+.field{display:flex;flex-direction:column;gap:2px;font-size:0.8125rem;color:var(--text-tertiary)}
+.field.wide{flex-basis:100%}
+.field.wide input,.field.wide select{width:100%}
+.field.check{flex-direction:row;align-items:center;gap:6px;color:var(--text-secondary)}
+.rx{margin:var(--space-3) 0 0}
+ul.why{list-style:none;margin:var(--space-2) 0 0;padding:0;font-size:0.8125rem;color:var(--text-secondary)}
+details>summary{cursor:pointer;color:var(--text-secondary);list-style:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:"+ ";color:var(--link)}
+details[open]>summary::before{content:"− "}
+.banner .ghost{margin-left:var(--space-2)}
 .scroll{overflow-x:auto}
 svg{margin:var(--space-3) 0 var(--space-4)}
 svg text{fill:var(--text-tertiary);font-family:var(--font);font-size:11px}
@@ -52,50 +63,21 @@ svg text{fill:var(--text-tertiary);font-family:var(--font);font-size:11px}
   <h1 class="post-title">Climbing training</h1>
   <p class="post-meta">V9 → V10 · a 7-day cycle from Tuesday, Oct 20, 2026</p>
   <nav class="tabs" aria-label="views">
-    <button data-view="today" aria-pressed="true">Today</button>
+    <button data-view="today">Today</button>
     <button data-view="week">Week</button>
     <button data-view="log">Log</button>
     <button data-view="bench">Benchmarks</button>
     <button data-view="library">Exercises</button>
+    <button data-view="method">Method</button>
   </nav>
 </header>
 <main id="app"></main>
 <footer><p>&copy; 2026 Will Castner &middot; logs stay in this browser</p></footer>
 <script>
 (function(){
-// ---- data (from the training doc, 10/20/2026) ------------------------------
-var ANCHOR = new Date(2026, 9, 20); // Tue Oct 20 2026 = Day 1, local time
-var BW = 160;
-var SCHEDULE = [
-  {day:1, session:"Fingers + limit bouldering", focus:"Finger strength", work:"Max hangs, then 60–75 min of V9–V10 limit problems", ex:["Max hangs","Limit bouldering"], climb:true},
-  {day:2, session:"Strength + antagonists", focus:"Pulling power", work:"Weighted pull-ups, front lever holds, push-ups or dips, band external rotations, shoulder mobility", ex:["Weighted pull-ups","Front lever progression","Push-ups or dips","Band external rotations","Shoulder mobility routine"], climb:false},
-  {day:3, session:"Rest", focus:"Recovery", work:"Optional ankle and hip mobility, about 15 min", ex:["Ankle and hip mobility"], climb:false, rest:true},
-  {day:4, session:"Fingers + board", focus:"Finger strength, power", work:"Max hangs, then 60 min on Kilter, Moon or Tension board", ex:["Max hangs","Board session"], climb:true},
-  {day:5, session:"Rest", focus:"Recovery", work:"Full rest before project day", ex:[], climb:false, rest:true},
-  {day:6, session:"Project day", focus:"Performance", work:"V9–V10 projecting, then toes-to-bar 3 × 8", ex:["Projecting","Toes-to-bar"], climb:true},
-  {day:7, session:"Easy volume + mobility", focus:"Technique, recovery", work:"Optional 45 min at V5–V7, antagonists, full mobility routine", ex:["Easy volume","Push-ups or dips","Band external rotations","Ankle and hip mobility"], climb:true}
-];
-var LIBRARY = {
-  "Max hangs": {cat:"Fingers", rx:"20mm edge, half crimp, 10 sec × 6, 3 min rest, load you could hold about 13 sec", log:"hang"},
-  "Limit bouldering": {cat:"Climbing", rx:"60–75 min on V9–V10, full rest between attempts"},
-  "Board session": {cat:"Climbing", rx:"60 min of powerful, reachy moves and deadpoints"},
-  "Projecting": {cat:"Climbing", rx:"V9–V10, target weaknesses: reachy moves, heel hooks, high feet"},
-  "Easy volume": {cat:"Climbing", rx:"45 min at V5–V7, quiet feet"},
-  "Weighted pull-ups": {cat:"Pulling", rx:"5 × 3–5, heavy, 3 min rest", log:"pull"},
-  "Front lever progression": {cat:"Core", rx:"4 × 5–8 sec holds"},
-  "Toes-to-bar": {cat:"Core", rx:"3 × 8"},
-  "Push-ups or dips": {cat:"Antagonist", rx:"3 × 10"},
-  "Band external rotations": {cat:"Shoulder", rx:"2 × 15 per arm"},
-  "Scap pull-ups": {cat:"Shoulder", rx:"2 × 10"},
-  "Shoulder mobility routine": {cat:"Mobility", rx:"Pass-throughs, wall slides, open-book rotations, doorway pec stretch"},
-  "Ankle and hip mobility": {cat:"Mobility", rx:"Knee-to-wall, ankle circles, frog stretch 60 sec, 90/90 switches × 10"}
-};
-var WARMUP = "Ankle circles, scap pull-ups, band external rotations, then easy climbing up to V6–V7.";
-var LOGS = {hang:"Max hang (20mm, 10 sec)", pull:"Weighted pull-up (5 × 3–5)"};
-var TARGETS = [
-  {key:"hangtest", name:"20mm half-crimp hang, 10 sec", pct:"145–160% of bodyweight total", lo:70, hi:95},
-  {key:"pulltest", name:"Weighted pull-up, 1 rep max", pct:"+55–70% of bodyweight", lo:90, hi:110}
-];
+// The plan (schedule, exercises, rule numbers, sources) lives in plan.json next
+// to this page; this script applies it to the logs kept in this browser.
+var P, ANCHOR;
 
 // ---- storage (local to this browser only) ---------------------------------
 var KEY = "climb.v1";
@@ -109,164 +91,418 @@ function midnight(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()
 function daysSince(d){ return Math.round((midnight(d) - ANCHOR) / DAY); }
 function cycleDay(d){ var n = daysSince(d); return ((n % 7) + 7) % 7 + 1; }
 function weekNo(d){ var n = daysSince(d); return n < 0 ? 0 : Math.floor(n / 7) + 1; }
-function isDeload(d){ var w = weekNo(d); return w > 0 && w % 5 === 0; }
 function addDays(d, k){ return new Date(d.getFullYear(), d.getMonth(), d.getDate() + k); }
+function weekStart(d){ return addDays(midnight(d), -(cycleDay(d)-1)); }
 function iso(d){ return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); }
 function fromIso(s){ var p = s.split("-"); return new Date(+p[0], +p[1]-1, +p[2]); }
 function fmt(d, long){ return d.toLocaleDateString(undefined, long ? {weekday:"long", month:"short", day:"numeric"} : {weekday:"short", month:"short", day:"numeric"}); }
 function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 
+// Training runs in 5-week blocks; the last week of each is a deload. Starting an
+// early deload moves the block start so that this week becomes week 5.
+function blockStart(){ return state.blockStart ? fromIso(state.blockStart) : ANCHOR; }
+function weeksIntoBlocks(d){ return Math.floor(Math.round((weekStart(d) - blockStart()) / DAY) / 7); }
+function blockWeek(d){ var w = P.block.weeks, n = weeksIntoBlocks(d); return ((n % w) + w) % w + 1; }
+function isDeload(d){ return daysSince(d) >= 0 && blockWeek(d) === P.block.deload_week; }
+function isTestWeek(d){ return daysSince(d) >= 0 && blockWeek(d) === 1 && weeksIntoBlocks(d) >= P.block.weeks; }
+
 var view = "today", viewDate = midnight(new Date());
 try { view = localStorage.getItem("climb.view") || "today"; } catch(e) {}
 
-// ---- helpers ---------------------------------------------------------------
+// ---- logs -------------------------------------------------------------------
+function R(){ return P.rules; }
+function bw(){ return state.bw || P.bodyweight_lb; }
 function logsOf(kind){ return state.logs.filter(function(l){ return l.kind === kind; }).sort(function(a,b){ return a.date < b.date ? -1 : 1; }); }
-function last(kind){ var l = logsOf(kind); return l.length ? l[l.length-1] : null; }
-function lastRetest(){
-  var t = state.logs.filter(function(l){ return l.kind === "hangtest" || l.kind === "pulltest"; }).map(function(l){ return l.date; }).sort();
-  return t.length ? fromIso(t[t.length-1]) : ANCHOR;
+function entry(kind, date){ return state.logs.filter(function(l){ return l.kind === kind && l.date === date; })[0]; }
+function sys(l){ return (l.bw || bw()) + l.load; }
+function before(list, ds){ return list.filter(function(l){ return l.date < ds; }); }
+function lastItem(a){ return a.length ? a[a.length-1] : null; }
+
+// Turn a total (body + added) load back into added pounds, moving at least 1 lb
+// in the intended direction so small percentages still change something.
+function toAdded(total, prev, dir){
+  var a = Math.round(total - bw());
+  if (dir > 0 && a <= prev) a = prev + 1;
+  if (dir < 0 && a >= prev) a = prev - 1;
+  return a;
 }
-function retestStatus(today){
-  var weeks = (midnight(today) - lastRetest()) / DAY / 7;
-  if (weeks >= 8) return {level:"over", text:"Retest overdue: it's been " + Math.floor(weeks) + " weeks since the last benchmark."};
-  if (weeks >= 6) return {level:"due", text:"Retest window: " + Math.floor(weeks) + " weeks since the last benchmark (aim for weeks 6–8)."};
-  return {level:"ok", text:"Next retest in about " + Math.max(1, Math.ceil(6 - weeks)) + " weeks."};
-}
-function nextHint(kind){
-  var l = last(kind);
-  if (!l) return "No load logged yet. Start where 10 sec feels like you could hold about 13.";
-  var age = Math.round((midnight(new Date()) - fromIso(l.date)) / DAY);
-  var same = logsOf(kind).filter(function(x){ return x.load === l.load; }).length;
-  var step = (age >= 7 || same >= 2) ? " If it felt solid, try +" + (l.load + 2) + " to +" + (l.load + 5) + " lb." : " Hold this load until it feels solid (every 1–2 weeks, add 2–5 lb).";
-  return "Last: +" + l.load + " lb on " + fmt(fromIso(l.date)) + "." + step;
+function pct(f){ return Math.round(Math.abs(f - 1) * 100) + "%"; }
+
+// A retest after the last training entry rescales training loads by the same
+// ratio, but only when the change is bigger than test-to-test noise.
+function rescale(kind, since){
+  var t = logsOf(kind);
+  if (t.length < 2) return null;
+  var nw = t[t.length-1], old = t[t.length-2];
+  if (nw.date <= since) return null;
+  var ratio = sys(nw) / sys(old), change = (ratio - 1) * 100;
+  if (Math.abs(change) < R().test_noise_pct) return null;
+  return {ratio: ratio, text: "Retest " + (change > 0 ? "up " : "down ") + Math.abs(change).toFixed(1) + "%, so training load moves by the same ratio."};
 }
 
+function hangMissed(l){ return l.reserve != null && (l.reserve <= R().hang_down_reserve_s || (l.planned != null && l.sets < l.planned)); }
+function pullMissed(l){ return l.missed > 0; }
+
+function hangPlan(d){
+  var r = R(), ds = iso(d), why = [], deload = isDeload(d);
+  var sets = deload ? P.block.deload_hang_sets : P.block.hang_sets_by_week[blockWeek(d)-1];
+  var ci = entry("checkin", ds);
+  if (ci && ci.finger >= r.morning_finger_pain_skip)
+    return {skip:true, sets:sets, why:["Finger pain " + ci.finger + "/10 this morning: skip hangs today and keep the climbing easy."]};
+  var l = lastItem(before(logsOf("hang"), ds).filter(function(x){ return !x.deload; }));
+  if (!l) return {sets:sets, load:null, why:["Nothing logged yet. Pick a load you could hold for about 13 sec."]};
+  var f = 1, t = rescale("hangtest", l.date);
+  if (t) { f = t.ratio; why.push(t.text); }
+  else if (l.reserve == null) why.push("The last entry has no effort rating, so hold the load.");
+  else if (hangMissed(l)) {
+    f = 1 - r.hang_down;
+    why.push((l.planned != null && l.sets < l.planned ? "Did " + l.sets + " of " + l.planned + " hangs last time" :
+      l.reserve < 0 ? "Couldn't finish the last hang last time" : "Only " + l.reserve + " sec left on the last hang") + ": about " + pct(f) + " lighter.");
+  }
+  else if (l.reserve >= r.hang_up_reserve_s) { f = 1 + r.hang_up; why.push("5+ sec left last time: about " + pct(f) + " heavier."); }
+  else why.push(l.reserve + " sec left last time, on target: same load.");
+  if (f > 1 && !t && l.pain >= r.pain_no_increase) { f = 1; why[why.length-1] = "5+ sec left last time, but finger pain was " + l.pain + "/10, so no increase."; }
+  var load = f === 1 ? l.load : toAdded(sys(l) * f, l.load, f > 1 ? 1 : -1);
+  if (deload) { load = toAdded((bw() + load) * P.block.deload_hang_factor, load, -1); why.push("Deload week: " + sets + " hangs, about " + pct(P.block.deload_hang_factor) + " lighter."); }
+  return {sets:sets, load:load, why:why};
+}
+
+function pullPlan(d){
+  var r = R(), ds = iso(d), why = [], deload = isDeload(d);
+  var sets = deload ? P.block.deload_pull_sets : P.block.pull_sets;
+  var l = lastItem(before(logsOf("pull"), ds).filter(function(x){ return !x.deload; }));
+  if (!l) return {sets:sets, load:null, why:["Nothing logged yet. Pick a load you could do 5 reps with, 2 left in the tank (RPE 8)."]};
+  var f = 1, t = rescale("pulltest", l.date), k;
+  if (t) { f = t.ratio; why.push(t.text); }
+  else if (l.rpe == null) why.push("The last entry has no effort rating, so hold the load.");
+  else if (pullMissed(l)) { f = 1 - r.pull_down_per_missed_rep * l.missed; why.push("Missed " + (l.missed > 1 ? "2+ reps" : "a rep") + " last time: about " + pct(f) + " lighter."); }
+  else if (l.rpe < r.pull_rpe_low) { k = Math.round((r.pull_rpe_low - l.rpe) / 0.5); f = 1 + r.pull_step_per_half_rpe * k; why.push("RPE " + l.rpe + " last time, easier than the target of 8: about " + pct(f) + " heavier."); }
+  else if (l.rpe > r.pull_rpe_high) { k = Math.round((l.rpe - r.pull_rpe_high) / 0.5); f = 1 - r.pull_step_per_half_rpe * k; why.push("RPE " + l.rpe + " last time, harder than the target of 8: about " + pct(f) + " lighter."); }
+  else why.push("RPE " + l.rpe + " last time, on target: same load.");
+  var load = f === 1 ? l.load : toAdded(sys(l) * f, l.load, f > 1 ? 1 : -1);
+  if (deload) { load = toAdded((bw() + load) * P.block.deload_pull_factor, load, -1); why.push("Deload week: " + sets + " sets, about " + pct(P.block.deload_pull_factor) + " lighter, stop well short of failure."); }
+  return {sets:sets, load:load, why:why};
+}
+
+// ---- check-ins ----------------------------------------------------------------
+var CHECKIN = [
+  ["sleep", "Sleep", "1 poor · 5 great"], ["energy", "Energy", "1 drained · 5 fresh"], ["soreness", "Soreness", "1 very sore · 5 none"],
+  ["stress", "Stress", "1 high · 5 low"], ["mood", "Mood", "1 low · 5 great"]
+];
+function score(c){ return CHECKIN.reduce(function(s, q){ return s + (c[q[0]] || 0); }, 0); }
+// Low means clearly below your own last four weeks (mean minus one SD, at
+// least 1 point); with under a week of history, a fixed floor stands in.
+function lowCheckin(c){
+  var from = iso(addDays(fromIso(c.date), -28));
+  var past = logsOf("checkin").filter(function(x){ return x.date < c.date && x.date >= from; }).map(score);
+  if (past.length < 7) return score(c) <= R().low_checkin_fallback_sum;
+  var m = past.reduce(function(a,b){ return a+b; }, 0) / past.length;
+  var sd = Math.sqrt(past.reduce(function(a,b){ return a + (b-m)*(b-m); }, 0) / past.length);
+  return score(c) < m - Math.max(sd, 1);
+}
+
+// Weekly check, adapted from the OSTRC overuse questionnaire (Clarsen 2013).
+var WEEKLY = [
+  {q:"Taking part in training", opts:["Full, no problems","Full, but with problems","Reduced because of problems","Couldn't train because of problems"], pts:[0,8,17,25]},
+  {q:"How much problems cut your training", opts:["Not at all","A little","Moderately","A lot","Couldn't train"], pts:[0,6,13,19,25]},
+  {q:"How much problems hurt your performance", opts:["Not at all","A little","Moderately","A lot","Couldn't train"], pts:[0,6,13,19,25]},
+  {q:"Pain from fingers, elbows or shoulders", opts:["None","Mild","Moderate","Severe"], pts:[0,8,17,25]}
+];
+function weeklyScore(w){ return WEEKLY.reduce(function(s, q, i){ return s + q.pts[w["q"+i] || 0]; }, 0); }
+function substantial(w){ return w.q0 === 3 || w.q1 >= 2 || w.q2 >= 2; }
+
+// Reasons to deload early. Each one is a sign of overreaching or an overuse
+// problem; none uses a workload ratio.
+function deloadSignals(d){
+  if (isDeload(d)) return [];
+  var ds = iso(d), out = [], r = R(), recent = iso(addDays(d, -10));
+  function lastTwo(kind){ return logsOf(kind).filter(function(l){ return !l.deload && l.date <= ds && l.date >= recent; }).slice(-2); }
+  var h = lastTwo("hang"), p = lastTwo("pull");
+  if (h.length === 2 && h.every(hangMissed)) out.push("missed the planned hang load 2 sessions in a row");
+  if (p.length === 2 && p.every(pullMissed)) out.push("missed pull-up reps 2 sessions in a row");
+  var days = [];
+  for (var i = 0; i < r.low_checkin_days; i++) days.push(entry("checkin", iso(addDays(d, -i))));
+  if (days.every(function(c){ return c && lowCheckin(c); })) out.push("the morning check-in has been low " + r.low_checkin_days + " days running");
+  var pain = [0,1].map(function(i){ return entry("checkin", iso(addDays(d, -i))); });
+  if (pain.every(function(c){ return c && c.finger >= r.morning_finger_pain_skip; })) out.push("finger pain in the morning 2 days running");
+  var w = lastItem(logsOf("weekly").filter(function(x){ return x.date <= ds && x.date > iso(addDays(d, -7)); }));
+  if (w && substantial(w)) out.push("this week's check shows a problem that's cutting training or performance");
+  return out;
+}
+
+// ---- form pieces --------------------------------------------------------------
+function num(name, val, attrs){ return "<input type=number data-num name=" + name + (val != null && val !== "" ? " value='" + val + "'" : "") + " " + (attrs || "") + ">"; }
+function sel(name, opts, val, attrs){
+  var isNum = opts.every(function(o){ return typeof o[0] === "number"; });
+  return "<select" + (isNum ? " data-num" : "") + " name=" + name + " " + (attrs || "") + "><option value=''>–</option>" + opts.map(function(o){
+    return "<option value='" + o[0] + "'" + (val != null && String(val) === String(o[0]) ? " selected" : "") + ">" + esc(o[1]) + "</option>";
+  }).join("") + "</select>";
+}
+function text(name, val, ph){ return "<input name=" + name + " value='" + esc(val || "") + "'" + (ph ? " placeholder='" + esc(ph) + "'" : "") + ">"; }
+function field(label, inner, cls){ return "<label class='field" + (cls ? " " + cls : "") + "'><span>" + esc(label) + "</span>" + inner + "</label>"; }
+function range(a, b, step){ var o = []; for (var v = a; v <= b + 1e-9; v += (step || 1)) o.push([v, String(v)]); return o; }
+function form(kind, ds, inner, existing){
+  return "<form class=logform data-kind=" + kind + " data-date=" + ds + ">" + inner + "<button class=act>" + (existing ? "Update" : "Log") + "</button></form>";
+}
+
+function hangForm(d, plan){
+  var ds = iso(d), m = entry("hang", ds) || {};
+  return form("hang", ds,
+    "<input type=hidden data-num name=planned value=" + plan.sets + ">" +
+    field("Added load (lb)", num("load", m.load != null ? m.load : plan.load, "step=0.5 required")) +
+    field("Hangs done", num("sets", m.sets != null ? m.sets : plan.sets, "min=0 max=10 required")) +
+    field("Sec left, last hang", sel("reserve", [[-1,"failed it"],[0,"0"],[1,"1"],[2,"2"],[3,"3"],[4,"4"],[5,"5+"]], m.reserve, "required")) +
+    field("Finger pain 0–10", sel("pain", range(0, 10), m.pain, "required")) +
+    field("Note", text("note", m.note), "wide"), m.id);
+}
+function pullForm(d, plan){
+  var ds = iso(d), m = entry("pull", ds) || {};
+  return form("pull", ds,
+    field("Added load (lb)", num("load", m.load != null ? m.load : plan.load, "step=0.5 required")) +
+    field("Reps", sel("missed", [[0,"all done"],[1,"missed 1"],[2,"missed 2+"]], m.missed != null ? m.missed : 0, "required")) +
+    field("RPE, last set", sel("rpe", range(6, 10, 0.5), m.rpe, "required")) +
+    field("Note", text("note", m.note), "wide"), m.id);
+}
+function testForm(t, ds){
+  var m = entry(t.key, ds) || {};
+  return form(t.key, ds, field("Max added load (lb)", num("load", m.load, "step=0.5 required")), m.id);
+}
+var TEST_HOW = {
+  hangtest: "Warm up fully, then in 3–4 attempts with 3+ min rest, find the most added weight you can hold for 10 sec on the 20mm edge, half crimp.",
+  pulltest: "Warm up, then in 3–5 attempts with 3–5 min rest, find the most added weight you can do one clean pull-up with."
+};
+
 // ---- views -----------------------------------------------------------------
-function exList(names, d){
-  if (!names.length) return "<p class=mut>Nothing scheduled.</p>";
-  return "<ul class=ex>" + names.map(function(n){
-    var e = LIBRARY[n] || {cat:"", rx:""};
-    var skip = isDeload(d) && e.log;
-    var form = "";
-    if (e.log && !skip) {
-      var mine = state.logs.filter(function(l){ return l.kind === e.log && l.date === iso(d); })[0];
-      form = "<form class=logform data-kind='" + e.log + "' data-date='" + iso(d) + "'>" +
-        "<label class=small>Added load (lb) <input type=number step=0.5 name=load value='" + (mine ? mine.load : "") + "' required></label>" +
-        "<input name=note placeholder='note (optional)' value='" + (mine ? esc(mine.note||"") : "") + "'>" +
-        "<button class=act>" + (mine ? "Update" : "Log") + "</button></form>" +
-        "<div class='mut small'>" + esc(nextHint(e.log)) + "</div>";
-    }
-    return "<li class=ex><b>" + esc(n) + (skip ? " <span class='pill warn'>skip: deload</span>" : "") + "</b>" +
-      "<span class=mut>" + esc(e.cat) + " · " + esc(e.rx) + "</span>" + form + "</li>";
-  }).join("") + "</ul>";
+function exItem(n, d){
+  var e = P.library[n] || {cat:"", rx:""}, extra = "";
+  var test = isTestWeek(d) && P.benchmarks.filter(function(t){ return t.day === cycleDay(d) && (t.key === e.log + "test"); })[0];
+  if (test) {
+    extra = "<p class=rx><span class='pill warn'>test day</span> " + esc(TEST_HOW[test.key]) + " This replaces today's training sets.</p>" + testForm(test, iso(d));
+  } else if (e.log) {
+    var plan = e.log === "hang" ? hangPlan(d) : pullPlan(d);
+    var unit = e.log === "hang" ? " × 10 sec" : " sets of 3–5";
+    extra = "<p class=rx>" + (plan.skip ? "<span class='pill warn'>skip today</span>" :
+      "Today: <strong>" + plan.sets + unit + (plan.load != null ? " at +" + plan.load + " lb" : "") + "</strong>") + "</p>" +
+      "<ul class=why>" + plan.why.map(function(w){ return "<li>" + esc(w) + "</li>"; }).join("") + "</ul>" +
+      (plan.skip ? "" : (e.log === "hang" ? hangForm(d, plan) : pullForm(d, plan)));
+  }
+  return "<li class=ex><b>" + esc(n) + "</b><span class=mut>" + esc(e.cat) + " · " + esc(e.rx) + "</span>" + extra + "</li>";
+}
+
+function checkinCard(d){
+  var ds = iso(d), m = entry("checkin", ds) || {};
+  var summary = m.id ? "Morning check-in: " + score(m) + "/25, finger pain " + m.finger + "/10" + (lowCheckin(m) ? " · lower than usual" : "") : "Morning check-in (30 sec)";
+  return "<details class=card" + (m.id ? "" : " open") + "><summary>" + esc(summary) + "</summary>" +
+    form("checkin", ds, CHECKIN.map(function(q){ return field(q[1] + " (" + q[2] + ")", sel(q[0], range(1, 5), m[q[0]], "required")); }).join("") +
+      field("Finger pain now 0–10", sel("finger", range(0, 10), m.finger, "required")), m.id) + "</details>";
+}
+
+function afterCard(d, s){
+  var ds = iso(d), m = entry("session", ds) || {};
+  var inner = field("Session effort 0–10", sel("rpe", range(0, 10), m.rpe, "required")) + field("Minutes", num("min", m.min, "min=0 max=400 required"));
+  if (s.reflect) inner +=
+    field("The crux that stopped you", text("crux", m.crux, "problem, move"), "wide") +
+    field("Why", sel("why", [["grip","grip"],["body","body position"],["power","power"],["fear","fear"],["beta","beta"],["skin","skin"],["other","other"]], m.why)) +
+    field("One thing to change next time", text("change", m.change), "wide") +
+    "<label class='field check'><input type=checkbox name=video" + (m.video ? " checked" : "") + "> filmed the crux</label>";
+  return "<div class=card><h3>After the session</h3>" + (s.reflect ? "<p class='mut small'>Write it right after, while it's fresh.</p>" : "") + form("session", ds, inner, m.id) + "</div>";
+}
+
+function weeklyCard(d){
+  var ds = iso(d), m = entry("weekly", ds) || {};
+  return "<div class=card><h3>Weekly check: fingers, elbows, shoulders</h3><p class='mut small'>Thinking about the past 7 days.</p>" +
+    form("weekly", ds, WEEKLY.map(function(q, i){ return field(q.q, sel("q" + i, q.opts.map(function(o, j){ return [j, o]; }), m["q"+i], "required"), "wide"); }).join(""), m.id) +
+    (m.id ? "<p class='mut small'>Score " + weeklyScore(m) + "/100" + (substantial(m) ? " · this is cutting training or performance: deload and get it looked at if it's not improving." : "") + "</p>" : "") + "</div>";
 }
 
 function renderToday(){
-  var d = viewDate, s = SCHEDULE[cycleDay(d)-1], before = daysSince(d) < 0;
-  var isToday = iso(d) === iso(new Date());
-  var rt = retestStatus(new Date());
+  var d = viewDate, s = P.schedule[cycleDay(d)-1], ds = iso(d);
+  var isToday = ds === iso(new Date());
   var html = "<div class='row daynav'><button class=ghost id=prev aria-label='previous day'>←</button>" +
     "<button class=ghost id=todaybtn" + (isToday ? " disabled" : "") + ">Today</button>" +
     "<button class=ghost id=next aria-label='next day'>→</button></div>";
-  if (before) return html + "<div class=card><p>The plan starts Tuesday, Oct 20, 2026.</p></div>";
-  if (isDeload(d)) html += "<div class=banner><b>Deload week (week " + weekNo(d) + ").</b> Keep climbing, drop hangboard and weighted pull-ups, cut volume about 40%.</div>";
-  if (rt.level !== "ok" && isToday) html += "<div class=banner>" + esc(rt.text) + " Log results on the Benchmarks tab.</div>";
-  html += "<div class=card><div class=mut>" + (isToday ? "Today · " : "") + esc(fmt(d, true)) + " · week " + weekNo(d) + ", day " + s.day + " of 7</div>" +
+  if (daysSince(d) < 0) return html + "<div class=card><p>The plan starts " + esc(fmt(ANCHOR, true)) + ".</p></div>";
+  if (isDeload(d)) html += "<div class=banner><b>Deload week.</b> Same days, less work: fewer and lighter hangs and pull-ups, shorter climbing, nothing to failure.</div>";
+  if (isTestWeek(d)) html += "<div class=banner><b>Test week.</b> You're fresh after the deload: day 1 tests max hangs, day 2 tests weighted pull-ups.</div>";
+  var sig = isToday ? deloadSignals(d) : [];
+  if (sig.length) html += "<div class=banner><b>Signs you could use a deload:</b> " + esc(sig.join("; ")) + ". <button class=ghost id=deloadnow>Make this week a deload</button></div>";
+  html += checkinCard(d);
+  var lastNote = lastItem(before(logsOf("session"), ds).filter(function(x){ return x.change; }));
+  html += "<div class=card><div class=mut>" + (isToday ? "Today · " : "") + esc(fmt(d, true)) + " · week " + weekNo(d) + " (block week " + blockWeek(d) + "), day " + s.day + " of 7</div>" +
     "<h2>" + esc(s.session) + "</h2><div class=row><span class=pill>" + esc(s.focus) + "</span></div>" +
-    "<p>" + esc(s.work) + (isDeload(d) && /Max hangs|Weighted/.test(s.work) ? " <span class=mut>(deload: skip the hangboard and weighted work)</span>" : "") + "</p>";
-  if (s.climb) html += "<h3>Warm-up</h3><p class=mut>" + esc(WARMUP) + "</p>";
-  html += "<h3>Exercises</h3>" + exList(s.ex, d) + "</div>";
-  html += "<p class='mut small'>Stop signs: pain in a finger pulley, the elbow, or the front of the shoulder means back off right away.</p>";
+    "<p>" + esc(s.work) + "</p>" +
+    (s.reflect && lastNote ? "<p class=banner>Last time (" + esc(fmt(fromIso(lastNote.date))) + ") you said: " + esc(lastNote.change) + "</p>" : "");
+  if (s.climb) html += "<h3>Warm-up</h3><p class=mut>" + esc(P.warmup) + "</p>";
+  html += "<h3>Exercises</h3>" + (s.ex.length ? "<ul class=ex>" + s.ex.map(function(n){ return exItem(n, d); }).join("") + "</ul>" : "<p class=mut>Nothing scheduled.</p>") + "</div>";
+  if (!s.rest) html += afterCard(d, s);
+  if (s.weekly_check) html += weeklyCard(d);
+  html += "<p class='mut small'>Stop signs: finger pain over 5/10, a pop, swelling, or pain in the elbow or the front of the shoulder means stop that exercise. A pop or swelling at the base of a finger needs a scan.</p>";
   return html;
 }
 
 function renderWeek(){
-  var today = midnight(new Date()), start = addDays(today, -(cycleDay(today)-1));
-  var rows = SCHEDULE.map(function(s, i){
+  var today = midnight(new Date()), start = weekStart(today);
+  var rows = P.schedule.map(function(s, i){
     var d = addDays(start, i);
     return "<tr" + (iso(d) === iso(today) ? " class=today" : "") + "><td>" + s.day + "</td><td>" + esc(fmt(d)) + "</td><td><b>" + esc(s.session) + "</b><div class='mut small'>" + esc(s.focus) + "</div></td><td>" + esc(s.work) + "</td></tr>";
   }).join("");
-  return "<div class=card><div class=row style='justify-content:space-between'><div><h2>Week " + weekNo(today) + "</h2><div class=mut>" +
-    esc(fmt(start)) + " – " + esc(fmt(addDays(start, 6))) + (isDeload(today) ? " · <span class='pill warn'>deload week</span>" : "") + "</div></div></div>" +
+  var hs = isDeload(today) ? P.block.deload_hang_sets : P.block.hang_sets_by_week[blockWeek(today)-1];
+  return "<div class=card><h2>Week " + weekNo(today) + "</h2><div class=mut>" +
+    esc(fmt(start)) + " – " + esc(fmt(addDays(start, 6))) + " · block week " + blockWeek(today) + " of " + P.block.weeks +
+    (isDeload(today) ? " · <span class='pill warn'>deload</span>" : "") + (isTestWeek(today) ? " · <span class='pill warn'>test week</span>" : "") + "</div>" +
     "<div class=scroll><table><thead><tr><th>Day</th><th>Date</th><th>Session</th><th>Key work</th></tr></thead><tbody>" + rows + "</tbody></table></div>" +
-    "<p class='mut small'>Hangboard days (1 and 4) sit at least 48 hours apart. Every 5th week is a deload.</p></div>";
+    "<p class='mut small'>Max hangs this week: " + hs + " per session. They build " + P.block.hang_sets_by_week.join(" → ") + " through each block, then week " + P.block.deload_week + " is a deload. Hang days sit at least 48 hours apart.</p></div>";
 }
 
 function chart(kind){
   var l = logsOf(kind);
   if (l.length < 2) return "<p class='mut small'>The chart appears after two entries.</p>";
-  var W = 560, H = 160, P = 30;
+  var W = 560, H = 160, PAD = 30;
   var t0 = fromIso(l[0].date).getTime(), t1 = fromIso(l[l.length-1].date).getTime() || t0 + 1;
   var vals = l.map(function(x){ return x.load; }), lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
   if (hi === lo) { hi += 5; lo -= 5; }
-  function X(t){ return P + (W - 2*P) * (t1 === t0 ? 0.5 : (t - t0) / (t1 - t0)); }
-  function Y(v){ return H - P + 6 - (H - 2*P) * (v - lo) / (hi - lo); }
+  function X(t){ return PAD + (W - 2*PAD) * (t1 === t0 ? 0.5 : (t - t0) / (t1 - t0)); }
+  function Y(v){ return H - PAD + 6 - (H - 2*PAD) * (v - lo) / (hi - lo); }
   var pts = l.map(function(x){ return X(fromIso(x.date).getTime()).toFixed(1) + "," + Y(x.load).toFixed(1); }).join(" ");
   var dots = l.map(function(x){ return "<circle cx='" + X(fromIso(x.date).getTime()).toFixed(1) + "' cy='" + Y(x.load).toFixed(1) + "' r='3.5' fill='var(--link)'><title>" + esc(x.date) + ": +" + x.load + " lb</title></circle>"; }).join("");
   return "<svg viewBox='0 0 " + W + " " + H + "' width='100%' role='img' aria-label='added load over time'>" +
     "<text x='4' y='" + (Y(hi)+4) + "'>+" + hi + "</text><text x='4' y='" + (Y(lo)+4) + "'>+" + lo + "</text>" +
     "<polyline points='" + pts + "' fill='none' stroke='var(--link)' stroke-width='2'/>" + dots + "</svg>";
 }
+function del(x){ return "<td><button class=ghost data-del='" + x.id + "' aria-label='delete entry'>×</button></td>"; }
+function table(head, rows, empty){
+  return "<div class=scroll><table><thead><tr>" + head.map(function(h){ return "<th>" + h + "</th>"; }).join("") + "<th></th></tr></thead><tbody>" +
+    (rows || "<tr><td colspan=" + (head.length + 1) + " class=mut>" + empty + "</td></tr>") + "</tbody></table></div>";
+}
 
 function renderLog(){
-  return Object.keys(LOGS).map(function(kind){
-    var l = logsOf(kind).slice().reverse();
-    var rows = l.map(function(x){
-      return "<tr><td>" + esc(fmt(fromIso(x.date))) + "</td><td>+" + x.load + " lb</td><td class=mut>" + esc(x.note || "") + "</td>" +
-        "<td><button class=ghost data-del='" + x.id + "' aria-label='delete entry'>×</button></td></tr>";
-    }).join("") || "<tr><td colspan=4 class=mut>Nothing logged yet. Log from the Today view on days 1, 2 and 4.</td></tr>";
-    return "<div class=card><h2>" + esc(LOGS[kind]) + "</h2><p class='mut small'>" + esc(nextHint(kind)) + "</p>" + chart(kind) +
-      "<div class=scroll><table><thead><tr><th>Date</th><th>Added</th><th>Note</th><th></th></tr></thead><tbody>" + rows + "</tbody></table></div></div>";
-  }).join("") +
-  "<div class=card><h3>Backup</h3><p class='mut small'>Logs live only in this browser on this laptop. Export a copy now and then.</p>" +
-  "<div class=row><button class=ghost id=export>Export logs</button><label class='ghost small' style='cursor:pointer'>Import… <input type=file id=import accept='application/json' hidden></label></div></div>";
+  var today = midnight(new Date()), html = "";
+  var hp = hangPlan(addDays(today, 1)), pp = pullPlan(addDays(today, 1));
+  html += "<div class=card><h2>Max hangs</h2><p class='mut small'>Next: " + esc(hp.load != null ? "+" + hp.load + " lb. " : "") + esc(hp.why.join(" ")) + "</p>" + chart("hang") +
+    table(["Date", "Added", "Hangs", "Sec left", "Pain", "Note"], logsOf("hang").reverse().map(function(x){
+      return "<tr><td>" + esc(fmt(fromIso(x.date))) + (x.deload ? " <span class=pill>deload</span>" : "") + "</td><td>+" + x.load + "</td><td>" + (x.sets != null ? x.sets + "/" + x.planned : "") +
+        "</td><td>" + (x.reserve == null ? "" : x.reserve < 0 ? "failed" : x.reserve >= 5 ? "5+" : x.reserve) + "</td><td>" + (x.pain != null ? x.pain : "") + "</td><td class=mut>" + esc(x.note || "") + "</td>" + del(x) + "</tr>";
+    }).join(""), "Nothing logged yet.") + "</div>";
+  html += "<div class=card><h2>Weighted pull-ups</h2><p class='mut small'>Next: " + esc(pp.load != null ? "+" + pp.load + " lb. " : "") + esc(pp.why.join(" ")) + "</p>" + chart("pull") +
+    table(["Date", "Added", "Reps", "RPE", "Note"], logsOf("pull").reverse().map(function(x){
+      return "<tr><td>" + esc(fmt(fromIso(x.date))) + (x.deload ? " <span class=pill>deload</span>" : "") + "</td><td>+" + x.load + "</td><td>" + (x.missed == null ? "" : x.missed ? "missed " + (x.missed > 1 ? "2+" : "1") : "all") +
+        "</td><td>" + (x.rpe != null ? x.rpe : "") + "</td><td class=mut>" + esc(x.note || "") + "</td>" + del(x) + "</tr>";
+    }).join(""), "Nothing logged yet.") + "</div>";
+
+  // Weekly totals: session load (effort × minutes) and hang sets kept apart,
+  // since session effort undercounts finger stress.
+  var weeks = {};
+  state.logs.forEach(function(l){
+    var w = weekNo(fromIso(l.date)); if (!w) return;
+    var o = weeks[w] = weeks[w] || {load:0, hangs:0, ci:[]};
+    if (l.kind === "session" && l.rpe != null && l.min) o.load += l.rpe * l.min;
+    if (l.kind === "hang" && l.sets) o.hangs += l.sets;
+    if (l.kind === "checkin") o.ci.push(score(l));
+  });
+  var wk = Object.keys(weeks).map(Number).sort(function(a,b){ return b - a; });
+  html += "<div class=card><h2>Week by week</h2>" + "<div class=scroll><table><thead><tr><th>Week</th><th>Session load</th><th>Hang sets</th><th>Avg check-in</th></tr></thead><tbody>" +
+    (wk.map(function(w){ var o = weeks[w]; return "<tr><td>" + w + "</td><td>" + (o.load || "") + "</td><td>" + (o.hangs || "") + "</td><td>" +
+      (o.ci.length ? (o.ci.reduce(function(a,b){ return a+b; }, 0) / o.ci.length).toFixed(1) + "/25" : "") + "</td></tr>"; }).join("") ||
+      "<tr><td colspan=4 class=mut>Fills in as you log.</td></tr>") + "</tbody></table></div>" +
+    "<p class='mut small'>Session load is effort (0–10) × minutes, summed for the week.</p></div>";
+
+  var refl = logsOf("session").filter(function(x){ return x.crux || x.change; }).reverse();
+  html += "<div class=card><h2>Session notes</h2>" + table(["Date", "Crux", "Why", "Change next time"], refl.map(function(x){
+    return "<tr><td>" + esc(fmt(fromIso(x.date))) + (x.video ? " <span class=pill>video</span>" : "") + "</td><td>" + esc(x.crux || "") + "</td><td>" + esc(x.why || "") + "</td><td>" + esc(x.change || "") + "</td>" + del(x) + "</tr>";
+  }).join(""), "Notes from limit, board and project days show up here.") + "</div>";
+
+  var ci = logsOf("checkin").reverse().slice(0, 14);
+  html += "<div class=card><h2>Check-ins</h2>" + table(["Date", "Score", "Finger pain"], ci.map(function(x){
+    return "<tr><td>" + esc(fmt(fromIso(x.date))) + "</td><td>" + score(x) + "/25" + (lowCheckin(x) ? " <span class='pill warn'>low</span>" : "") + "</td><td>" + x.finger + "</td>" + del(x) + "</tr>";
+  }).join(""), "Nothing yet. Check in from the Today view.") +
+    "<p class='mut small'>“Low” means clearly below your own last 4 weeks. The last 14 are shown.</p></div>";
+
+  html += "<div class=card><h3>Backup</h3><p class='mut small'>Logs live only in this browser. Export a copy now and then.</p>" +
+    "<div class=row><button class=ghost id=export>Export logs</button><label class='ghost small' style='cursor:pointer'>Import… <input type=file id=import accept='application/json' hidden></label></div></div>";
+  return html;
 }
 
 function renderBench(){
-  var rt = retestStatus(new Date());
-  var rows = TARGETS.map(function(t){
-    var l = logsOf(t.key), best = l.length ? l[l.length-1] : null;
-    return "<tr><td><b>" + esc(t.name) + "</b><div class='mut small'>" + esc(t.pct) + "</div></td><td>+" + t.lo + "–" + t.hi + " lb</td>" +
-      "<td>" + (best ? "+" + best.load + " lb <span class='mut small'>" + esc(fmt(fromIso(best.date))) + "</span>" + (best.load >= t.lo ? " <span class=pill>at target</span>" : "") : "<span class=mut>not tested</span>") + "</td>" +
-      "<td><form class=logform data-kind='" + t.key + "' data-date='" + iso(new Date()) + "'><input type=number step=0.5 name=load placeholder='+ lb' required><button class=act>Log</button></form></td></tr>";
+  var rows = P.benchmarks.map(function(t){
+    var l = logsOf(t.key), cur = lastItem(l), prev = l.length > 1 ? l[l.length-2] : null, change = "";
+    if (cur && prev) {
+      var c = (sys(cur) / sys(prev) - 1) * 100;
+      change = (c >= 0 ? "+" : "−") + Math.abs(c).toFixed(1) + "% <span class='mut small'>" +
+        (Math.abs(c) < R().test_noise_pct ? "within test noise" : Math.abs(c) < R().test_real_pct ? "probably real" : "real") + "</span>";
+    }
+    return "<tr><td><b>" + esc(t.name) + "</b><div class='mut small'>" + esc(TEST_HOW[t.key]) + "</div></td>" +
+      "<td>" + (cur ? "+" + cur.load + " lb <span class='mut small'>" + Math.round(sys(cur) / (cur.bw || bw()) * 100) + "% BW · " + esc(fmt(fromIso(cur.date))) + "</span>" : "<span class=mut>not tested</span>") + "</td>" +
+      "<td>" + change + "</td><td class=mut>+" + t.ref_lo + "–" + t.ref_hi + " lb</td><td>" + testForm(t, iso(new Date())) + "</td></tr>";
   }).join("");
-  return "<div class=card><h2>Benchmarks</h2><p" + (rt.level !== "ok" ? " class=banner" : " class=mut") + ">" + esc(rt.text) + "</p>" +
-    "<div class=scroll><table><thead><tr><th>Benchmark</th><th>V10 target (" + BW + " lb)</th><th>Latest</th><th>Log a retest</th></tr></thead><tbody>" + rows + "</tbody></table></div>" +
-    "<p class='mut small'>Targets are approximate common training benchmarks, not a sourced study. Add 2–5 lb to max hangs every 1–2 weeks, deload every 4–5 weeks, retest every 6–8 weeks.</p></div>";
+  var next = midnight(new Date()), n = 0;
+  while (!isTestWeek(next) && n++ < 70) next = addDays(next, 1);
+  return "<div class=card><h2>Benchmarks</h2><p class=mut>" + (isTestWeek(new Date()) ? "This is a test week." : "Next test week starts " + esc(fmt(weekStart(next))) + ", right after the deload.") + "</p>" +
+    "<div class=scroll><table><thead><tr><th>Benchmark</th><th>Latest</th><th>Change</th><th>V10 reference</th><th>Log a test</th></tr></thead><tbody>" + rows + "</tbody></table></div>" +
+    "<p class='mut small'>Test-to-test noise is about 2–3%, so a change under " + R().test_noise_pct + "% isn't counted, and over " + R().test_real_pct + "% is very likely real. A real change rescales training loads. " +
+    "The V10 reference is a rough community figure at " + bw() + " lb (" + esc(P.benchmarks[0].ref) + "); no study gives a V9 vs V10 norm, so your own trend matters more.</p>" +
+    "<form class=logform id=bwform>" + field("Body weight (lb)", num("bw", bw(), "step=0.5 min=60 max=400 required")) + "<button class=act>Save</button></form></div>";
+}
+
+function renderMethod(){
+  function src(ids){ return ids.map(function(id){ var s = P.sources[id]; return s ? "<a href='" + esc(s.url) + "'>" + esc(s.cite) + "</a>" : esc(id); }).join("; "); }
+  return "<div class=card><h2>How it adapts</h2><p class=mut>Each rule below comes from the research, with how strong the evidence is. Where studies don't settle it, it says so. The numbers live in <code>plan.json</code>, so changing the plan is a small edit.</p>" +
+    P.method.map(function(m){ return "<h3>" + esc(m.title) + "</h3><p>" + esc(m.rule) + "</p><p class='mut small'><b>Evidence:</b> " + esc(m.evidence.replace(/\.$/, "")) + ". " + src(m.sources) + "</p>"; }).join("") + "</div>" +
+    "<div class=card><h3>Changed from the original plan (" + esc(P.updated) + ")</h3><ul>" + P.changes.map(function(c){ return "<li>" + esc(c) + "</li>"; }).join("") + "</ul></div>";
 }
 
 function renderLibrary(){
-  var rows = Object.keys(LIBRARY).map(function(n){
-    var used = SCHEDULE.filter(function(s){ return s.ex.indexOf(n) >= 0; }).map(function(s){ return s.day; });
-    if (n === "Scap pull-ups") used = ["warm-up"];
-    if (n === "Band external rotations") used = used.concat(["warm-up"]);
-    return "<tr><td><b>" + esc(n) + "</b></td><td>" + esc(LIBRARY[n].cat) + "</td><td>" + esc(LIBRARY[n].rx) + "</td><td>" + esc(used.join(", ")) + "</td></tr>";
+  var rows = Object.keys(P.library).map(function(n){
+    var used = P.schedule.filter(function(s){ return s.ex.indexOf(n) >= 0; }).map(function(s){ return s.day; });
+    if (P.warmup.toLowerCase().indexOf(n.toLowerCase()) >= 0) used = used.concat(["warm-up"]);
+    return "<tr><td><b>" + esc(n) + "</b></td><td>" + esc(P.library[n].cat) + "</td><td>" + esc(P.library[n].rx) + "</td><td>" + esc(used.join(", ")) + "</td></tr>";
   }).join("");
   return "<div class=card><h2>Exercises</h2><div class=scroll><table><thead><tr><th>Exercise</th><th>Category</th><th>Prescription</th><th>Days</th></tr></thead><tbody>" + rows + "</tbody></table></div>" +
-    "<p class='mut small'>Warm-up before every climbing day: " + esc(WARMUP) + "</p></div>";
+    "<p class='mut small'>Warm-up before every climbing day: " + esc(P.warmup) + "</p></div>";
 }
 
 // ---- wiring ----------------------------------------------------------------
+var LOAD_KINDS = {hang:1, pull:1, hangtest:1, pulltest:1};
+function collect(f){
+  var o = {};
+  Array.prototype.forEach.call(f.elements, function(el){
+    if (!el.name) return;
+    if (el.type === "checkbox") o[el.name] = el.checked;
+    else if (el.value === "") return;
+    else o[el.name] = "num" in el.dataset ? parseFloat(el.value) : el.value.trim();
+  });
+  return o;
+}
 function render(){
   var app = document.getElementById("app");
-  app.innerHTML = {today:renderToday, week:renderWeek, log:renderLog, bench:renderBench, library:renderLibrary}[view]();
+  app.innerHTML = {today:renderToday, week:renderWeek, log:renderLog, bench:renderBench, method:renderMethod, library:renderLibrary}[view]();
   document.querySelectorAll("nav button").forEach(function(b){ b.setAttribute("aria-pressed", String(b.dataset.view === view)); });
   var p = document.getElementById("prev"), n = document.getElementById("next"), t = document.getElementById("todaybtn");
   if (p) p.onclick = function(){ viewDate = addDays(viewDate, -1); render(); };
   if (n) n.onclick = function(){ viewDate = addDays(viewDate, 1); render(); };
   if (t) t.onclick = function(){ viewDate = midnight(new Date()); render(); };
-  app.querySelectorAll("form.logform").forEach(function(f){
+  var dn = document.getElementById("deloadnow");
+  if (dn) dn.onclick = function(){
+    if (!confirm("Make this week a deload? The next block, and its test week, start after it.")) return;
+    state.blockStart = iso(addDays(weekStart(new Date()), -7 * (P.block.deload_week - 1)));
+    save(state); render();
+  };
+  app.querySelectorAll("form.logform[data-kind]").forEach(function(f){
     f.onsubmit = function(e){
       e.preventDefault();
-      var load = parseFloat(f.load.value);
-      if (isNaN(load)) return;
-      var kind = f.dataset.kind, date = f.dataset.date, note = f.note ? f.note.value.trim() : "";
+      var kind = f.dataset.kind, date = f.dataset.date, o = collect(f);
+      if (LOAD_KINDS[kind]) { if (isNaN(o.load)) return; o.bw = bw(); }
+      if (kind === "hang" || kind === "pull") o.deload = isDeload(fromIso(date));
+      var old = entry(kind, date);
       state.logs = state.logs.filter(function(l){ return !(l.kind === kind && l.date === date); });
-      state.logs.push({id: Date.now() + "-" + Math.random().toString(36).slice(2,6), kind:kind, date:date, load:load, note:note});
+      o.id = old ? old.id : Date.now() + "-" + Math.random().toString(36).slice(2,6);
+      o.kind = kind; o.date = date;
+      state.logs.push(o);
       if (!save(state)) alert("Couldn't save: this browser is blocking local storage.");
       render();
     };
   });
+  var bf = document.getElementById("bwform");
+  if (bf) bf.onsubmit = function(e){ e.preventDefault(); var v = parseFloat(bf.bw.value); if (!isNaN(v)) { state.bw = v; save(state); render(); } };
   app.querySelectorAll("[data-del]").forEach(function(b){
     b.onclick = function(){ if (!confirm("Delete this entry?")) return; state.logs = state.logs.filter(function(l){ return l.id !== b.dataset.del; }); save(state); render(); };
   });
@@ -286,9 +522,13 @@ function render(){
   };
 }
 document.querySelectorAll("nav button").forEach(function(b){
-  b.onclick = function(){ view = b.dataset.view; try { localStorage.setItem("climb.view", view); } catch(e) {} if (view === "today") viewDate = midnight(new Date()); render(); };
+  b.onclick = function(){ view = b.dataset.view; try { localStorage.setItem("climb.view", view); } catch(e) {} if (view === "today") viewDate = midnight(new Date()); if (P) render(); };
 });
-render();
+fetch("plan.json", {cache: "no-cache"}).then(function(r){ if (!r.ok) throw r.status; return r.json(); }).then(function(plan){
+  P = plan; ANCHOR = fromIso(P.start); render();
+}).catch(function(){
+  document.getElementById("app").innerHTML = "<p class=banner>Couldn't load the plan (plan.json). Check your connection and reload.</p>";
+});
 })();
 </script>
 </body>
