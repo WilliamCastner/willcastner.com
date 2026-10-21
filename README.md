@@ -32,7 +32,7 @@ python3 build.py --serve   # http://localhost:8000
 | `pages/index.md`  | The bio paragraphs on the homepage                     |
 | `pages/*.md`      | Optional standalone pages — `now.md` becomes `/now/`   |
 | `templates/base.html` | The single layout wrapping every page              |
-| `static/`         | Copied verbatim to the site root (`style.css`, images) |
+| `static/`         | Copied verbatim to the site root (`style.css`, images). A folder is copied whole: `static/climbing/` becomes `/climbing/` |
 | `docs/`           | **Generated.** Served by Pages. Never edit by hand.    |
 
 The homepage is the whole site: name, bio, a row of links, then every post

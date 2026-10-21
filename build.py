@@ -9,7 +9,7 @@ Sources:
     posts/YYYY-MM-DD-slug.md   blog posts
     pages/name.md              standalone pages (about, etc.)
     templates/base.html        the one layout
-    static/*                   copied verbatim
+    static/*                   copied verbatim (folders too: static/climbing/ -> /climbing/)
 """
 
 import html
@@ -31,6 +31,7 @@ DOMAIN = "willcastner.com"
 LINKS = [
     ("Email", "mailto:william@mechanize.work"),
     ("GitHub", "https://github.com/WilliamCastner"),
+    ("Climbing", "/climbing/"),
 ]
 
 WORDS_PER_MINUTE = 200
@@ -309,6 +310,9 @@ def build():
     for item in (ROOT / "static").iterdir():
         if item.is_file():
             shutil.copy2(item, OUT / item.name)
+        elif item.is_dir():
+            # A folder is a self-contained page or app: static/climbing/ -> /climbing/
+            shutil.copytree(item, OUT / item.name)
 
     # No trailing newline: matches the file GitHub writes when the custom
     # domain is saved in Settings, so rebuilds don't show spurious drift.

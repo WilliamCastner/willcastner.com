@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Climbing Training</title>
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--fg:#1d1d1f;--mut:#6b6b70;--line:#e3e2dd;--acc:#2f6f4f;--accbg:#e6f1ea;--warn:#9a5b00;--warnbg:#fbf0dc;--red:#a33;--r:12px}
+@media (prefers-color-scheme:dark){:root{--bg:#121214;--card:#1c1c1f;--fg:#ececee;--mut:#9a9aa2;--line:#2c2c31;--acc:#6fc196;--accbg:#1d2e25;--warn:#e0a84a;--warnbg:#33281a;--red:#e07a7a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+header{max-width:860px;margin:0 auto;padding:20px 16px 4px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline}
+h1{font-size:20px;margin:0}
+.back{flex-basis:100%;color:var(--mut);text-decoration:none;font-size:14px}
+.back:hover{color:var(--fg)}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{background:none;border:1px solid var(--line);color:var(--fg);padding:6px 12px;border-radius:999px;cursor:pointer;font:inherit}
+nav button[aria-pressed=true]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+main{max-width:860px;margin:0 auto;padding:8px 16px 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:12px 0}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.mut{color:var(--mut)}
+.pill{display:inline-block;font-size:12px;padding:2px 9px;border-radius:999px;background:var(--accbg);color:var(--acc);font-weight:600}
+.pill.warn{background:var(--warnbg);color:var(--warn)}
+.banner{border-radius:var(--r);padding:10px 14px;margin:12px 0;background:var(--warnbg);color:var(--warn)}
+h2{font-size:22px;margin:4px 0}
+h3{font-size:15px;margin:16px 0 6px}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+tr.today td{background:var(--accbg)}
+ul.ex{list-style:none;padding:0;margin:0}
+ul.ex li{padding:10px 0;border-bottom:1px solid var(--line)}
+ul.ex li:last-child{border-bottom:0}
+.ex b{display:block}
+input,button.act,select{font:inherit;padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg)}
+input[type=number]{width:7em}
+button.act{cursor:pointer;background:var(--acc);border-color:var(--acc);color:#fff}
+button.ghost{cursor:pointer;background:none;border:1px solid var(--line);color:var(--fg);padding:6px 10px;border-radius:8px;font:inherit}
+.logform{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:6px}
+.scroll{overflow-x:auto}
+svg text{fill:var(--mut);font-size:11px}
+.small{font-size:13px}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="/">&larr; Will Castner</a>
+  <h1>Climbing Training · V9 → V10</h1>
+  <nav aria-label="views">
+    <button data-view="today" aria-pressed="true">Today</button>
+    <button data-view="week">Week</button>
+    <button data-view="log">Log</button>
+    <button data-view="bench">Benchmarks</button>
+    <button data-view="library">Exercises</button>
+  </nav>
+</header>
+<main id="app"></main>
+<script>
+(function(){
+// ---- data (from the training doc, 10/20/2026) ------------------------------
+var ANCHOR = new Date(2026, 9, 20); // Tue Oct 20 2026 = Day 1, local time
+var BW = 160;
+var SCHEDULE = [
+  {day:1, session:"Fingers + limit bouldering", focus:"Finger strength", work:"Max hangs, then 60–75 min of V9–V10 limit problems", ex:["Max hangs","Limit bouldering"], climb:true},
+  {day:2, session:"Strength + antagonists", focus:"Pulling power", work:"Weighted pull-ups, front lever holds, push-ups or dips, band external rotations, shoulder mobility", ex:["Weighted pull-ups","Front lever progression","Push-ups or dips","Band external rotations","Shoulder mobility routine"], climb:false},
+  {day:3, session:"Rest", focus:"Recovery", work:"Optional ankle and hip mobility, about 15 min", ex:["Ankle and hip mobility"], climb:false, rest:true},
+  {day:4, session:"Fingers + board", focus:"Finger strength, power", work:"Max hangs, then 60 min on Kilter, Moon or Tension board", ex:["Max hangs","Board session"], climb:true},
+  {day:5, session:"Rest", focus:"Recovery", work:"Full rest before project day", ex:[], climb:false, rest:true},
+  {day:6, session:"Project day", focus:"Performance", work:"V9–V10 projecting, then toes-to-bar 3 × 8", ex:["Projecting","Toes-to-bar"], climb:true},
+  {day:7, session:"Easy volume + mobility", focus:"Technique, recovery", work:"Optional 45 min at V5–V7, antagonists, full mobility routine", ex:["Easy volume","Push-ups or dips","Band external rotations","Ankle and hip mobility"], climb:true}
+];
+var LIBRARY = {
+  "Max hangs": {cat:"Fingers", rx:"20mm edge, half crimp, 10 sec × 6, 3 min rest, load you could hold about 13 sec", log:"hang"},
+  "Limit bouldering": {cat:"Climbing", rx:"60–75 min on V9–V10, full rest between attempts"},
+  "Board session": {cat:"Climbing", rx:"60 min of powerful, reachy moves and deadpoints"},
+  "Projecting": {cat:"Climbing", rx:"V9–V10, target weaknesses: reachy moves, heel hooks, high feet"},
+  "Easy volume": {cat:"Climbing", rx:"45 min at V5–V7, quiet feet"},
+  "Weighted pull-ups": {cat:"Pulling", rx:"5 × 3–5, heavy, 3 min rest", log:"pull"},
+  "Front lever progression": {cat:"Core", rx:"4 × 5–8 sec holds"},
+  "Toes-to-bar": {cat:"Core", rx:"3 × 8"},
+  "Push-ups or dips": {cat:"Antagonist", rx:"3 × 10"},
+  "Band external rotations": {cat:"Shoulder", rx:"2 × 15 per arm"},
+  "Scap pull-ups": {cat:"Shoulder", rx:"2 × 10"},
+  "Shoulder mobility routine": {cat:"Mobility", rx:"Pass-throughs, wall slides, open-book rotations, doorway pec stretch"},
+  "Ankle and hip mobility": {cat:"Mobility", rx:"Knee-to-wall, ankle circles, frog stretch 60 sec, 90/90 switches × 10"}
+};
+var WARMUP = "Ankle circles, scap pull-ups, band external rotations, then easy climbing up to V6–V7.";
+var LOGS = {hang:"Max hang (20mm, 10 sec)", pull:"Weighted pull-up (5 × 3–5)"};
+var TARGETS = [
+  {key:"hangtest", name:"20mm half-crimp hang, 10 sec", pct:"145–160% of bodyweight total", lo:70, hi:95},
+  {key:"pulltest", name:"Weighted pull-up, 1 rep max", pct:"+55–70% of bodyweight", lo:90, hi:110}
+];
+
+// ---- storage (local to this browser only) ---------------------------------
+var KEY = "climb.v1";
+function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || {logs:[]}; } catch(e){ return {logs:[]}; } }
+function save(s){ try { localStorage.setItem(KEY, JSON.stringify(s)); return true; } catch(e){ return false; } }
+var state = load();
+
+// ---- dates ----------------------------------------------------------------
+var DAY = 86400000;
+function midnight(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+function daysSince(d){ return Math.round((midnight(d) - ANCHOR) / DAY); }
+function cycleDay(d){ var n = daysSince(d); return ((n % 7) + 7) % 7 + 1; }
+function weekNo(d){ var n = daysSince(d); return n < 0 ? 0 : Math.floor(n / 7) + 1; }
+function isDeload(d){ var w = weekNo(d); return w > 0 && w % 5 === 0; }
+function addDays(d, k){ return new Date(d.getFullYear(), d.getMonth(), d.getDate() + k); }
+function iso(d){ return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); }
+function fromIso(s){ var p = s.split("-"); return new Date(+p[0], +p[1]-1, +p[2]); }
+function fmt(d, long){ return d.toLocaleDateString(undefined, long ? {weekday:"long", month:"short", day:"numeric"} : {weekday:"short", month:"short", day:"numeric"}); }
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+
+var view = "today", viewDate = midnight(new Date());
+try { view = localStorage.getItem("climb.view") || "today"; } catch(e) {}
+
+// ---- helpers ---------------------------------------------------------------
+function logsOf(kind){ return state.logs.filter(function(l){ return l.kind === kind; }).sort(function(a,b){ return a.date < b.date ? -1 : 1; }); }
+function last(kind){ var l = logsOf(kind); return l.length ? l[l.length-1] : null; }
+function lastRetest(){
+  var t = state.logs.filter(function(l){ return l.kind === "hangtest" || l.kind === "pulltest"; }).map(function(l){ return l.date; }).sort();
+  return t.length ? fromIso(t[t.length-1]) : ANCHOR;
+}
+function retestStatus(today){
+  var weeks = (midnight(today) - lastRetest()) / DAY / 7;
+  if (weeks >= 8) return {level:"over", text:"Retest overdue: it's been " + Math.floor(weeks) + " weeks since the last benchmark."};
+  if (weeks >= 6) return {level:"due", text:"Retest window: " + Math.floor(weeks) + " weeks since the last benchmark (aim for weeks 6–8)."};
+  return {level:"ok", text:"Next retest in about " + Math.max(1, Math.ceil(6 - weeks)) + " weeks."};
+}
+function nextHint(kind){
+  var l = last(kind);
+  if (!l) return "No load logged yet. Start where 10 sec feels like you could hold about 13.";
+  var age = Math.round((midnight(new Date()) - fromIso(l.date)) / DAY);
+  var same = logsOf(kind).filter(function(x){ return x.load === l.load; }).length;
+  var step = (age >= 7 || same >= 2) ? " If it felt solid, try +" + (l.load + 2) + " to +" + (l.load + 5) + " lb." : " Hold this load until it feels solid (every 1–2 weeks, add 2–5 lb).";
+  return "Last: +" + l.load + " lb on " + fmt(fromIso(l.date)) + "." + step;
+}
+
+// ---- views -----------------------------------------------------------------
+function exList(names, d){
+  if (!names.length) return "<p class=mut>Nothing scheduled.</p>";
+  return "<ul class=ex>" + names.map(function(n){
+    var e = LIBRARY[n] || {cat:"", rx:""};
+    var skip = isDeload(d) && e.log;
+    var form = "";
+    if (e.log && !skip) {
+      var mine = state.logs.filter(function(l){ return l.kind === e.log && l.date === iso(d); })[0];
+      form = "<form class=logform data-kind='" + e.log + "' data-date='" + iso(d) + "'>" +
+        "<label class=small>Added load (lb) <input type=number step=0.5 name=load value='" + (mine ? mine.load : "") + "' required></label>" +
+        "<input name=note placeholder='note (optional)' value='" + (mine ? esc(mine.note||"") : "") + "'>" +
+        "<button class=act>" + (mine ? "Update" : "Log") + "</button></form>" +
+        "<div class='mut small'>" + esc(nextHint(e.log)) + "</div>";
+    }
+    return "<li class=ex><b>" + esc(n) + (skip ? " <span class='pill warn'>skip: deload</span>" : "") + "</b>" +
+      "<span class=mut>" + esc(e.cat) + " · " + esc(e.rx) + "</span>" + form + "</li>";
+  }).join("") + "</ul>";
+}
+
+function renderToday(){
+  var d = viewDate, s = SCHEDULE[cycleDay(d)-1], before = daysSince(d) < 0;
+  var isToday = iso(d) === iso(new Date());
+  var rt = retestStatus(new Date());
+  var html = "<div class=row><button class=ghost id=prev aria-label='previous day'>←</button>" +
+    "<button class=ghost id=todaybtn" + (isToday ? " disabled" : "") + ">Today</button>" +
+    "<button class=ghost id=next aria-label='next day'>→</button></div>";
+  if (before) return html + "<div class=card><p>The plan starts Tuesday, Oct 20, 2026.</p></div>";
+  if (isDeload(d)) html += "<div class=banner><b>Deload week (week " + weekNo(d) + ").</b> Keep climbing, drop hangboard and weighted pull-ups, cut volume about 40%.</div>";
+  if (rt.level !== "ok" && isToday) html += "<div class=banner>" + esc(rt.text) + " Log results on the Benchmarks tab.</div>";
+  html += "<div class=card><div class=mut>" + (isToday ? "Today · " : "") + esc(fmt(d, true)) + " · week " + weekNo(d) + ", day " + s.day + " of 7</div>" +
+    "<h2>" + esc(s.session) + "</h2><div class=row><span class=pill>" + esc(s.focus) + "</span></div>" +
+    "<p>" + esc(s.work) + (isDeload(d) && /Max hangs|Weighted/.test(s.work) ? " <span class=mut>(deload: skip the hangboard and weighted work)</span>" : "") + "</p>";
+  if (s.climb) html += "<h3>Warm-up</h3><p class=mut>" + esc(WARMUP) + "</p>";
+  html += "<h3>Exercises</h3>" + exList(s.ex, d) + "</div>";
+  html += "<p class='mut small'>Stop signs: pain in a finger pulley, the elbow, or the front of the shoulder means back off right away.</p>";
+  return html;
+}
+
+function renderWeek(){
+  var today = midnight(new Date()), start = addDays(today, -(cycleDay(today)-1));
+  var rows = SCHEDULE.map(function(s, i){
+    var d = addDays(start, i);
+    return "<tr" + (iso(d) === iso(today) ? " class=today" : "") + "><td>" + s.day + "</td><td>" + esc(fmt(d)) + "</td><td><b>" + esc(s.session) + "</b><div class='mut small'>" + esc(s.focus) + "</div></td><td>" + esc(s.work) + "</td></tr>";
+  }).join("");
+  return "<div class=card><div class=row style='justify-content:space-between'><div><h2>Week " + weekNo(today) + "</h2><div class=mut>" +
+    esc(fmt(start)) + " – " + esc(fmt(addDays(start, 6))) + (isDeload(today) ? " · <span class='pill warn'>deload week</span>" : "") + "</div></div></div>" +
+    "<div class=scroll><table><thead><tr><th>Day</th><th>Date</th><th>Session</th><th>Key work</th></tr></thead><tbody>" + rows + "</tbody></table></div>" +
+    "<p class='mut small'>Hangboard days (1 and 4) sit at least 48 hours apart. Every 5th week is a deload.</p></div>";
+}
+
+function chart(kind){
+  var l = logsOf(kind);
+  if (l.length < 2) return "<p class='mut small'>The chart appears after two entries.</p>";
+  var W = 560, H = 160, P = 30;
+  var t0 = fromIso(l[0].date).getTime(), t1 = fromIso(l[l.length-1].date).getTime() || t0 + 1;
+  var vals = l.map(function(x){ return x.load; }), lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+  if (hi === lo) { hi += 5; lo -= 5; }
+  function X(t){ return P + (W - 2*P) * (t1 === t0 ? 0.5 : (t - t0) / (t1 - t0)); }
+  function Y(v){ return H - P + 6 - (H - 2*P) * (v - lo) / (hi - lo); }
+  var pts = l.map(function(x){ return X(fromIso(x.date).getTime()).toFixed(1) + "," + Y(x.load).toFixed(1); }).join(" ");
+  var dots = l.map(function(x){ return "<circle cx='" + X(fromIso(x.date).getTime()).toFixed(1) + "' cy='" + Y(x.load).toFixed(1) + "' r='3.5' fill='var(--acc)'><title>" + esc(x.date) + ": +" + x.load + " lb</title></circle>"; }).join("");
+  return "<svg viewBox='0 0 " + W + " " + H + "' width='100%' role='img' aria-label='added load over time'>" +
+    "<text x='4' y='" + (Y(hi)+4) + "'>+" + hi + "</text><text x='4' y='" + (Y(lo)+4) + "'>+" + lo + "</text>" +
+    "<polyline points='" + pts + "' fill='none' stroke='var(--acc)' stroke-width='2'/>" + dots + "</svg>";
+}
+
+function renderLog(){
+  return Object.keys(LOGS).map(function(kind){
+    var l = logsOf(kind).slice().reverse();
+    var rows = l.map(function(x){
+      return "<tr><td>" + esc(fmt(fromIso(x.date))) + "</td><td>+" + x.load + " lb</td><td class=mut>" + esc(x.note || "") + "</td>" +
+        "<td><button class=ghost data-del='" + x.id + "' aria-label='delete entry'>×</button></td></tr>";
+    }).join("") || "<tr><td colspan=4 class=mut>Nothing logged yet. Log from the Today view on days 1, 2 and 4.</td></tr>";
+    return "<div class=card><h2>" + esc(LOGS[kind]) + "</h2><p class='mut small'>" + esc(nextHint(kind)) + "</p>" + chart(kind) +
+      "<div class=scroll><table><thead><tr><th>Date</th><th>Added</th><th>Note</th><th></th></tr></thead><tbody>" + rows + "</tbody></table></div></div>";
+  }).join("") +
+  "<div class=card><h3>Backup</h3><p class='mut small'>Logs live only in this browser on this laptop. Export a copy now and then.</p>" +
+  "<div class=row><button class=ghost id=export>Export logs</button><label class='ghost small' style='cursor:pointer'>Import… <input type=file id=import accept='application/json' hidden></label></div></div>";
+}
+
+function renderBench(){
+  var rt = retestStatus(new Date());
+  var rows = TARGETS.map(function(t){
+    var l = logsOf(t.key), best = l.length ? l[l.length-1] : null;
+    return "<tr><td><b>" + esc(t.name) + "</b><div class='mut small'>" + esc(t.pct) + "</div></td><td>+" + t.lo + "–" + t.hi + " lb</td>" +
+      "<td>" + (best ? "+" + best.load + " lb <span class='mut small'>" + esc(fmt(fromIso(best.date))) + "</span>" + (best.load >= t.lo ? " <span class=pill>at target</span>" : "") : "<span class=mut>not tested</span>") + "</td>" +
+      "<td><form class=logform data-kind='" + t.key + "' data-date='" + iso(new Date()) + "'><input type=number step=0.5 name=load placeholder='+ lb' required><button class=act>Log</button></form></td></tr>";
+  }).join("");
+  return "<div class=card><h2>Benchmarks</h2><p" + (rt.level !== "ok" ? " class=banner" : " class=mut") + ">" + esc(rt.text) + "</p>" +
+    "<div class=scroll><table><thead><tr><th>Benchmark</th><th>V10 target (" + BW + " lb)</th><th>Latest</th><th>Log a retest</th></tr></thead><tbody>" + rows + "</tbody></table></div>" +
+    "<p class='mut small'>Targets are approximate common training benchmarks, not a sourced study. Add 2–5 lb to max hangs every 1–2 weeks, deload every 4–5 weeks, retest every 6–8 weeks.</p></div>";
+}
+
+function renderLibrary(){
+  var rows = Object.keys(LIBRARY).map(function(n){
+    var used = SCHEDULE.filter(function(s){ return s.ex.indexOf(n) >= 0; }).map(function(s){ return s.day; });
+    if (n === "Scap pull-ups") used = ["warm-up"];
+    if (n === "Band external rotations") used = used.concat(["warm-up"]);
+    return "<tr><td><b>" + esc(n) + "</b></td><td>" + esc(LIBRARY[n].cat) + "</td><td>" + esc(LIBRARY[n].rx) + "</td><td>" + esc(used.join(", ")) + "</td></tr>";
+  }).join("");
+  return "<div class=card><h2>Exercises</h2><div class=scroll><table><thead><tr><th>Exercise</th><th>Category</th><th>Prescription</th><th>Days</th></tr></thead><tbody>" + rows + "</tbody></table></div>" +
+    "<p class='mut small'>Warm-up before every climbing day: " + esc(WARMUP) + "</p></div>";
+}
+
+// ---- wiring ----------------------------------------------------------------
+function render(){
+  var app = document.getElementById("app");
+  app.innerHTML = {today:renderToday, week:renderWeek, log:renderLog, bench:renderBench, library:renderLibrary}[view]();
+  document.querySelectorAll("nav button").forEach(function(b){ b.setAttribute("aria-pressed", String(b.dataset.view === view)); });
+  var p = document.getElementById("prev"), n = document.getElementById("next"), t = document.getElementById("todaybtn");
+  if (p) p.onclick = function(){ viewDate = addDays(viewDate, -1); render(); };
+  if (n) n.onclick = function(){ viewDate = addDays(viewDate, 1); render(); };
+  if (t) t.onclick = function(){ viewDate = midnight(new Date()); render(); };
+  app.querySelectorAll("form.logform").forEach(function(f){
+    f.onsubmit = function(e){
+      e.preventDefault();
+      var load = parseFloat(f.load.value);
+      if (isNaN(load)) return;
+      var kind = f.dataset.kind, date = f.dataset.date, note = f.note ? f.note.value.trim() : "";
+      state.logs = state.logs.filter(function(l){ return !(l.kind === kind && l.date === date); });
+      state.logs.push({id: Date.now() + "-" + Math.random().toString(36).slice(2,6), kind:kind, date:date, load:load, note:note});
+      if (!save(state)) alert("Couldn't save: this browser is blocking local storage.");
+      render();
+    };
+  });
+  app.querySelectorAll("[data-del]").forEach(function(b){
+    b.onclick = function(){ if (!confirm("Delete this entry?")) return; state.logs = state.logs.filter(function(l){ return l.id !== b.dataset.del; }); save(state); render(); };
+  });
+  var ex = document.getElementById("export");
+  if (ex) ex.onclick = function(){
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], {type:"application/json"}));
+    a.download = "climbing-logs-" + iso(new Date()) + ".json"; a.click();
+  };
+  var im = document.getElementById("import");
+  if (im) im.onchange = function(){
+    var file = im.files[0]; if (!file) return;
+    file.text().then(function(txt){
+      try { var s = JSON.parse(txt); if (!Array.isArray(s.logs)) throw 0; if (confirm("Replace your logs with " + s.logs.length + " entries from this file?")) { state = s; save(state); render(); } }
+      catch(e){ alert("That file isn't a climbing log export."); }
+    });
+  };
+}
+document.querySelectorAll("nav button").forEach(function(b){
+  b.onclick = function(){ view = b.dataset.view; try { localStorage.setItem("climb.view", view); } catch(e) {} if (view === "today") viewDate = midnight(new Date()); render(); };
+});
+render();
+})();
+</script>
+</body>
+</html>
